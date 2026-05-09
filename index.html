@@ -100,6 +100,7 @@
   .edit-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   .edit-table tr:last-child td { border-bottom: none; }
   .edit-table tr.row-inactive td { opacity: .4; }
+  .edit-table tr.row-eliminada td { opacity: .2; text-decoration: line-through; color: var(--hint); }
   .edit-table input, .edit-table select {
     font-family: 'Inter', sans-serif; font-size: 13px; padding: 7px 10px;
     border: 1px solid var(--border); border-radius: 6px; background: var(--bg);
@@ -342,7 +343,7 @@ function loadLogs(){
 let accounts=loadAccounts();
 let logs=loadLogs();
 
-const isInactive=a=>a.status==='Passed'||a.status==='Failed';
+const isInactive=a=>a.status==='Passed'||a.status==='Failed'||a.status==='Eliminada';
 const activeAccounts=()=>accounts.filter(a=>!isInactive(a));
 const ph1Accounts=()=>activeAccounts().filter(a=>a.fase==='Ph1');
 const fundedAccounts=()=>activeAccounts().filter(a=>a.fase==='Funded');
@@ -584,8 +585,9 @@ function renderCuentasTab(){
 // ── EDITAR CUENTAS ──
 function renderEditTable(){
   document.getElementById('editTableBody').innerHTML=accounts.map((a,i)=>{
+    const eliminada=a.status==='Eliminada';
     const inactive=isInactive(a);
-    return `<tr class="${inactive?'row-inactive':''}">
+    return `<tr class="${eliminada?'row-eliminada':inactive?'row-inactive':''}">
       <td><input type="text" value="${a.id}" onchange="accounts[${i}].id=this.value" ${inactive?'disabled':''}></td>
       <td><select onchange="accounts[${i}].fase=this.value" ${inactive?'disabled':''}>
         <option value="Ph1"    ${a.fase==='Ph1'?'selected':''}>Fase 1</option>
@@ -598,7 +600,8 @@ function renderEditTable(){
         <option value="New"     ${a.status==='New'?'selected':''}>New</option>
         <option value="Ongoing" ${a.status==='Ongoing'?'selected':''}>Ongoing</option>
         <option value="Passed"  ${a.status==='Passed'?'selected':''}>Passed ✓</option>
-        <option value="Failed"  ${a.status==='Failed'?'selected':''}>Failed ✗</option>
+        <option value="Failed"    ${a.status==='Failed'?'selected':''}>Failed ✗</option>
+        <option value="Eliminada" ${a.status==='Eliminada'?'selected':''}>Eliminada 🗑</option>
       </select></td>
     </tr>`;
   }).join('');
