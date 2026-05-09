@@ -12,6 +12,7 @@
     --bg: #f5f5f4; --surface: #ffffff; --border: #e5e5e3;
     --text: #1c1c1a; --muted: #6b6b68; --hint: #a8a8a4;
     --green: #3a7d44; --green-bg: #edf7ef;
+    --emerald: #047857; --emerald-bg: #d1fae5;
     --red: #c0392b; --red-bg: #fdf0ef;
     --blue: #2563eb; --blue-bg: #eff4ff;
     --indigo: #5b5bd6; --indigo-bg: #f0f0ff;
@@ -32,7 +33,6 @@
 
   .section-label { font-size: 11px; font-weight: 600; color: var(--hint); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 12px; }
 
-  /* KPI GRID — 4 cols first row, 4 cols second row */
   .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 28px; }
   .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
   .kpi-label { font-size: 11px; font-weight: 600; color: var(--hint); text-transform: uppercase; letter-spacing: .05em; }
@@ -40,12 +40,11 @@
   .kpi-sub { font-size: 11px; color: var(--hint); }
   .kpi.accent-blue    { border-top: 3px solid var(--blue); }
   .kpi.accent-indigo  { border-top: 3px solid var(--indigo); }
-  .kpi.accent-amber   { border-top: 3px solid var(--amber); }
+  .kpi.accent-emerald { border-top: 3px solid var(--emerald); }
   .kpi.accent-purple  { border-top: 3px solid var(--purple); }
   .kpi.accent-red     { border-top: 3px solid var(--red); }
   .kpi.accent-teal    { border-top: 3px solid var(--teal); }
   .kpi.accent-green   { border-top: 3px solid var(--green); }
-  .kpi.accent-gray    { border-top: 3px solid var(--hint); }
 
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
   .card-title { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 16px; }
@@ -55,36 +54,44 @@
   .leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
   .chart-wrap { position: relative; width: 100%; }
 
-  /* PHASE SECTIONS in Cuentas tab */
+  /* PHASE SECTIONS */
   .phase-section { margin-bottom: 32px; }
   .phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
   .phase-title { font-size: 15px; font-weight: 600; }
   .phase-pill { font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: 20px; }
-  .phase-pill-funded { background: var(--amber-bg); color: var(--amber); }
-  .phase-pill-ph2    { background: var(--indigo-bg); color: var(--indigo); }
-  .phase-pill-ph1    { background: var(--blue-bg); color: var(--blue); }
+  .phase-pill-funded { background: var(--emerald-bg); color: var(--emerald); }
+  .phase-pill-ph2    { background: var(--indigo-bg);  color: var(--indigo); }
+  .phase-pill-ph1    { background: var(--blue-bg);    color: var(--blue); }
   .phase-empty { font-size: 13px; color: var(--hint); padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); text-align: center; }
 
   /* ACCOUNT CARDS */
-  .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
   .account-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; }
   .account-card.inactive { opacity: .4; border-style: dashed; }
-  .acc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .acc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .acc-id { font-size: 14px; font-weight: 600; }
-  .acc-balance { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
-  .acc-pct { font-size: 13px; font-weight: 500; margin-bottom: 10px; }
+  .acc-balance { font-size: 20px; font-weight: 600; margin-bottom: 2px; }
+  .acc-pct { font-size: 13px; font-weight: 500; margin-bottom: 12px; }
   .acc-pct.pos { color: var(--green); }
   .acc-pct.neg { color: var(--red); }
   .acc-pct.zero { color: var(--muted); }
-  .bar-bg { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 4px; }
 
+  /* PROGRESS BARS */
+  .acc-metrics { display: flex; flex-direction: column; gap: 8px; }
+  .metric-row { display: flex; flex-direction: column; gap: 3px; }
+  .metric-labels { display: flex; justify-content: space-between; align-items: center; }
+  .metric-label { font-size: 10px; font-weight: 500; color: var(--hint); text-transform: uppercase; letter-spacing: .04em; }
+  .metric-value { font-size: 11px; font-weight: 500; }
+  .bar-bg { height: 5px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width .3s; }
+
+  /* BADGES */
   .badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; display: inline-block; }
-  .badge-ph1    { background: var(--blue-bg); color: var(--blue); }
-  .badge-ph2    { background: var(--indigo-bg); color: var(--indigo); }
-  .badge-funded { background: var(--amber-bg); color: var(--amber); }
-  .badge-passed { background: var(--green-bg); color: var(--green); }
-  .badge-failed { background: var(--red-bg); color: var(--red); }
+  .badge-ph1     { background: var(--blue-bg);    color: var(--blue); }
+  .badge-ph2     { background: var(--indigo-bg);  color: var(--indigo); }
+  .badge-funded  { background: var(--emerald-bg); color: var(--emerald); }
+  .badge-passed  { background: var(--green-bg);   color: var(--green); }
+  .badge-failed  { background: var(--red-bg);     color: var(--red); }
 
   /* EDIT TABLE */
   .edit-table-wrap { overflow-x: auto; }
@@ -168,8 +175,6 @@
       <p class="section-label" style="margin-bottom:0">Todas las cuentas</p>
       <label class="show-toggle"><input type="checkbox" id="showInactive"> Mostrar passed / failed</label>
     </div>
-
-    <!-- Funded -->
     <div class="phase-section">
       <div class="phase-header">
         <span class="phase-title">Funded</span>
@@ -177,8 +182,6 @@
       </div>
       <div id="grid-funded"></div>
     </div>
-
-    <!-- Fase 2 -->
     <div class="phase-section">
       <div class="phase-header">
         <span class="phase-title">Fase 2</span>
@@ -186,8 +189,6 @@
       </div>
       <div id="grid-ph2"></div>
     </div>
-
-    <!-- Fase 1 -->
     <div class="phase-section">
       <div class="phase-header">
         <span class="phase-title">Fase 1</span>
@@ -252,10 +253,8 @@
       <button class="btn" onclick="addLog()">Registrar</button>
     </div>
     <div id="tipo-hint" class="form-hint"></div>
-
     <p class="section-label">Totales</p>
     <div class="kpi-grid" id="kpis-gastos" style="margin-bottom:24px"></div>
-
     <div class="card" style="margin-bottom:24px">
       <p class="card-title">Gastos vs retiros ($)</p>
       <div class="legend">
@@ -266,7 +265,6 @@
         <canvas id="chartLog" role="img" aria-label="Totales de gastos y retiros"></canvas>
       </div>
     </div>
-
     <p class="section-label">Historial — edita cualquier campo y guarda</p>
     <div class="card" style="padding:0;overflow:hidden">
       <div id="log-container"><div class="empty">Sin movimientos registrados todavía.</div></div>
@@ -293,6 +291,13 @@ const DEFAULT_LOGS = [
   {id:1746403200001, fecha:'2026-05-05', tipo:'gasto', cuenta:'#12083427', importe:35.00, nota:'Fee evaluación Fase 1'},
   {id:1746403200002, fecha:'2026-05-06', tipo:'gasto', cuenta:'#12139081', importe:36.00, nota:'Fee evaluación Fase 1'},
 ];
+
+// Objetivos y límites por fase
+const FASE_TARGET = {Ph1: 8, Ph2: 5};   // % objetivo para pasar
+const FUNDED_TARGET = 6;                 // % objetivo mensual de retiro en Funded
+const BALANCE_INICIAL = 5000;
+const MAX_DRAWDOWN_PCT = 10;             // % máximo de pérdida sobre balance inicial
+const MAX_DRAWDOWN_USD = BALANCE_INICIAL * MAX_DRAWDOWN_PCT / 100; // $500
 
 function loadAccounts(){
   try{
@@ -324,7 +329,6 @@ const activeAccounts=()=>accounts.filter(a=>!isInactive(a));
 const ph1Accounts=()=>activeAccounts().filter(a=>a.fase==='Ph1');
 const fundedAccounts=()=>activeAccounts().filter(a=>a.fase==='Funded');
 
-const faseColor=f=>f==='Ph1'?'#2563eb':f==='Ph2'?'#5b5bd6':'#b45309';
 const faseLabel=f=>f==='Ph1'?'Fase 1':f==='Ph2'?'Fase 2':'Funded';
 const statusBadge=a=>{
   if(a.status==='Passed') return 'badge-passed';
@@ -362,27 +366,20 @@ function renderKPIs(){
   const totalEval=accounts.filter(a=>a.fase==='Ph1').length;
   const cuentasPh2=accounts.filter(a=>a.fase==='Ph2'&&!isInactive(a)).length;
 
-  const kpis=[
-    {label:'Evaluaciones',      value:totalEval,         sub:enCurso+' en curso · '+ph1Passed+' passed · '+ph1Failed+' failed', accent:'accent-blue'},
-    {label:'Cuentas Fase 1',    value:enCurso,           sub:enCurso===1?'cuenta activa':'cuentas activas',                     accent:'accent-blue',   color:'var(--blue)'},
-    {label:'Cuentas Fase 2',    value:cuentasPh2,        sub:cuentasPh2===1?'cuenta activa':'cuentas activas',                  accent:'accent-indigo', color:'var(--indigo)'},
-    {label:'Cuentas Funded',    value:totalFunded,       sub:totalFunded===1?'cuenta activa':'cuentas activas',                 accent:'accent-amber',  color: totalFunded>0?'var(--amber)':undefined},
-    {label:'Ratio de Fondeo',   value:ratioFondeo!==null?ratioFondeo.toFixed(1)+'%':'—',
-                                sub:ratioFondeo!==null?ph1Passed+' funded / '+totalTerminadas+' completadas':'Sin evaluaciones completadas aún',
-                                accent:'accent-purple',  color:ratioFondeo===null?'var(--hint)':ratioFondeo>=50?'var(--green)':'var(--amber)'},
-    {label:'Gastos totales',    value:fmt(totalGastos),  sub:logs.filter(l=>l.tipo==='gasto').length+' fees pagados',           accent:'accent-red',    color:totalGastos>0?'var(--red)':undefined},
-    {label:'Retiros totales',   value:fmt(totalRetiros), sub:logs.filter(l=>l.tipo==='retiro').length+' retiros',               accent:'accent-teal',   color:totalRetiros>0?'var(--teal)':undefined},
-    {label:'Beneficio neto',    value:(beneficioNeto>=0?'+':'')+fmt(beneficioNeto),
-                                sub:roi!==null?'ROI: '+(roi>=0?'+':'')+roi.toFixed(1)+'%':'Sin movimientos aún',
-                                accent:'accent-green',   color:beneficioNeto>0?'var(--green)':beneficioNeto<0?'var(--red)':undefined},
-  ];
-
-  document.getElementById('kpis').innerHTML=kpis.map(k=>`
-    <div class="kpi ${k.accent}">
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value" style="${k.color?'color:'+k.color:''}">${k.value}</div>
-      <div class="kpi-sub">${k.sub}</div>
-    </div>`).join('');
+  document.getElementById('kpis').innerHTML=[
+    {label:'Evaluaciones',    value:totalEval,   sub:enCurso+' en curso · '+ph1Passed+' passed · '+ph1Failed+' failed', accent:'accent-blue'},
+    {label:'Cuentas Fase 1',  value:enCurso,     sub:enCurso===1?'cuenta activa':'cuentas activas',  accent:'accent-blue',    color:'var(--blue)'},
+    {label:'Cuentas Fase 2',  value:cuentasPh2,  sub:cuentasPh2===1?'cuenta activa':'cuentas activas', accent:'accent-indigo', color:'var(--indigo)'},
+    {label:'Cuentas Funded',  value:totalFunded, sub:totalFunded===1?'cuenta activa':'cuentas activas', accent:'accent-emerald', color:totalFunded>0?'var(--emerald)':undefined},
+    {label:'Ratio de Fondeo', value:ratioFondeo!==null?ratioFondeo.toFixed(1)+'%':'—',
+     sub:ratioFondeo!==null?ph1Passed+' funded / '+totalTerminadas+' completadas':'Sin evaluaciones completadas aún',
+     accent:'accent-purple', color:ratioFondeo===null?'var(--hint)':ratioFondeo>=50?'var(--green)':'var(--amber)'},
+    {label:'Gastos totales',  value:fmt(totalGastos),  sub:logs.filter(l=>l.tipo==='gasto').length+' fees pagados', accent:'accent-red',  color:totalGastos>0?'var(--red)':undefined},
+    {label:'Retiros totales', value:fmt(totalRetiros), sub:logs.filter(l=>l.tipo==='retiro').length+' retiros',     accent:'accent-teal', color:totalRetiros>0?'var(--teal)':undefined},
+    {label:'Beneficio neto',  value:(beneficioNeto>=0?'+':'')+fmt(beneficioNeto),
+     sub:roi!==null?'ROI: '+(roi>=0?'+':'')+roi.toFixed(1)+'%':'Sin movimientos aún',
+     accent:'accent-green', color:beneficioNeto>0?'var(--green)':beneficioNeto<0?'var(--red)':undefined},
+  ].map(k=>`<div class="kpi ${k.accent}"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="${k.color?'color:'+k.color:''}">${k.value}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
 }
 
 // ── GRÁFICO MENSUAL ──
@@ -406,21 +403,15 @@ function renderChartMonthly(){
   const netoAcum=keys.map(k=>{ acum+=(map[k].retiros-map[k].gastos); return parseFloat(acum.toFixed(2)); });
   const gc='rgba(0,0,0,0.05)',tc='#888';
   chartMonthly=new Chart(document.getElementById('chartMonthly'),{
-    data:{
-      labels,
-      datasets:[
-        {type:'bar',  label:'Gastos',                  data:gastosMes,  backgroundColor:'rgba(192,57,43,0.75)',  borderRadius:4, yAxisID:'y'},
-        {type:'bar',  label:'Retiros',                 data:retirosMes, backgroundColor:'rgba(13,148,136,0.75)', borderRadius:4, yAxisID:'y'},
-        {type:'line', label:'Beneficio neto acumulado',data:netoAcum,   borderColor:'#3a7d44', backgroundColor:'rgba(58,125,68,0.08)', borderWidth:2, pointBackgroundColor:'#3a7d44', pointRadius:4, pointHoverRadius:6, fill:true, tension:0.3, yAxisID:'y'}
-      ]
-    },
+    data:{labels,datasets:[
+      {type:'bar', label:'Gastos', data:gastosMes, backgroundColor:'rgba(192,57,43,0.75)', borderRadius:4, yAxisID:'y'},
+      {type:'bar', label:'Retiros', data:retirosMes, backgroundColor:'rgba(13,148,136,0.75)', borderRadius:4, yAxisID:'y'},
+      {type:'line', label:'Beneficio neto acumulado', data:netoAcum, borderColor:'#3a7d44', backgroundColor:'rgba(58,125,68,0.08)', borderWidth:2, pointBackgroundColor:'#3a7d44', pointRadius:4, pointHoverRadius:6, fill:true, tension:0.3, yAxisID:'y'}
+    ]},
     options:{
       responsive:true, maintainAspectRatio:false,
       interaction:{mode:'index',intersect:false},
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+(ctx.parsed.y>=0?'+':'')+fmt(ctx.parsed.y)}}
-      },
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+(ctx.parsed.y>=0?'+':'')+fmt(ctx.parsed.y)}}},
       scales:{
         x:{ticks:{color:tc,font:{size:11},maxRotation:45},grid:{color:gc}},
         y:{ticks:{color:tc,font:{size:11},callback:v=>'$'+v.toLocaleString()},grid:{color:gc}}
@@ -429,31 +420,78 @@ function renderChartMonthly(){
   });
 }
 
-// ── TARJETAS POR FASE ──
+// ── TARJETAS ──
 function makeAccountCard(a){
-  const pct=nv(a.pct),bal=nv(a.balance),inactive=isInactive(a);
-  const cls=pct>0?'pos':pct<0?'neg':'zero';
-  const barW=Math.min(Math.abs(pct)/10*100,100);
+  const pct=nv(a.pct), bal=nv(a.balance), inactive=isInactive(a);
+  const pctClass=pct>0?'pos':pct<0?'neg':'zero';
+  const sign=pct>0?'+':'';
+
+  // Pérdida actual en USD sobre balance inicial
+  const lossUSD = BALANCE_INICIAL - bal;
+  const drawdownPct = Math.max(0, (lossUSD / BALANCE_INICIAL) * 100);
+  const drawdownRemaining = MAX_DRAWDOWN_USD - lossUSD;
+  const drawdownBarW = Math.min(drawdownPct / MAX_DRAWDOWN_PCT * 100, 100);
+  const drawdownColor = drawdownPct >= 7 ? '#c0392b' : drawdownPct >= 4 ? '#b45309' : '#3a7d44';
+
+  let progressBlock = '';
+  if(!inactive && (a.fase==='Ph1' || a.fase==='Ph2')){
+    const target = FASE_TARGET[a.fase];
+    const progressW = Math.min(Math.max(pct / target * 100, 0), 100);
+    const progressColor = pct >= target ? '#047857' : pct >= target * 0.5 ? '#3a7d44' : '#2563eb';
+    const progressValueColor = pct >= target ? 'var(--emerald)' : pct < 0 ? 'var(--red)' : 'var(--text)';
+    progressBlock = `
+      <div class="metric-row">
+        <div class="metric-labels">
+          <span class="metric-label">Progreso objetivo ${target}%</span>
+          <span class="metric-value" style="color:${progressValueColor}">${sign}${pct.toFixed(1)}% / ${target}%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${progressW}%;background:${progressColor}"></div></div>
+      </div>`;
+  }
+
+  if(!inactive && a.fase==='Funded'){
+    const progressW = Math.min(Math.max(pct / FUNDED_TARGET * 100, 0), 100);
+    const progressColor = pct >= FUNDED_TARGET ? '#047857' : pct >= FUNDED_TARGET * 0.5 ? '#3a7d44' : '#0d9488';
+    const progressValueColor = pct >= FUNDED_TARGET ? 'var(--emerald)' : pct < 0 ? 'var(--red)' : 'var(--teal)';
+    progressBlock = `
+      <div class="metric-row">
+        <div class="metric-labels">
+          <span class="metric-label">Objetivo retiro mensual ${FUNDED_TARGET}%</span>
+          <span class="metric-value" style="color:${progressValueColor}">${sign}${pct.toFixed(1)}% / ${FUNDED_TARGET}%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${progressW}%;background:${progressColor}"></div></div>
+      </div>`;
+  }
+
+  const drawdownBlock = !inactive ? `
+    <div class="metric-row">
+      <div class="metric-labels">
+        <span class="metric-label">Drawdown (máx. $${MAX_DRAWDOWN_USD})</span>
+        <span class="metric-value" style="color:${drawdownColor}">${drawdownPct.toFixed(1)}% — margen: ${fmt(Math.max(0,drawdownRemaining))}</span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${drawdownBarW}%;background:${drawdownColor}"></div></div>
+    </div>` : '';
+
   return `<div class="account-card${inactive?' inactive':''}">
     <div class="acc-head"><span class="acc-id">${a.id}</span><span class="badge ${statusBadge(a)}">${statusLabel(a)}</span></div>
     <div class="acc-balance">${fmt(bal)}</div>
-    <div class="acc-pct ${cls}">${pct>0?'+':''}${pct.toFixed(1)}%</div>
-    <div class="bar-bg"><div class="bar-fill" style="width:${barW}%;background:${pct>=0?'var(--green)':'var(--red)'}"></div></div>
+    <div class="acc-pct ${pctClass}">${sign}${pct.toFixed(1)}%</div>
+    <div class="acc-metrics">
+      ${progressBlock}
+      ${drawdownBlock}
+    </div>
   </div>`;
 }
 
 function renderCuentasTab(){
   const showInactive=document.getElementById('showInactive').checked;
-
   ['Funded','Ph2','Ph1'].forEach(fase=>{
     const id=fase==='Funded'?'funded':fase==='Ph2'?'ph2':'ph1';
     const list=accounts.filter(a=>a.fase===fase&&(showInactive||!isInactive(a)));
     const active=accounts.filter(a=>a.fase===fase&&!isInactive(a)).length;
     const total=accounts.filter(a=>a.fase===fase).length;
-
     const countEl=document.getElementById('count-'+id);
     if(countEl) countEl.textContent=showInactive?total+' total':active+' activa'+(active!==1?'s':'');
-
     const grid=document.getElementById('grid-'+id);
     if(!list.length){
       grid.innerHTML=`<div class="phase-empty">Sin cuentas${showInactive?'':' activas'} en ${faseLabel(fase)}.</div>`;
@@ -502,7 +540,6 @@ function saveAccounts(){
   }catch(e){ alert('Error al guardar.'); }
 }
 
-// ── SELECTOR ──
 function onTipoChange(){
   const tipo=document.getElementById('inp-tipo').value;
   const sel=document.getElementById('inp-cuenta');
@@ -522,7 +559,6 @@ function onTipoChange(){
   }
 }
 
-// ── GASTOS KPIs ──
 function renderKPIsGastos(){
   const g=logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+nv(l.importe),0);
   const r=logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+nv(l.importe),0);
