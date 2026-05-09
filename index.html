@@ -150,8 +150,8 @@
 </head>
 <body>
 <div class="app">
-  <div class="app-title">Trading Tracker</div>
-  <div class="app-subtitle">Panel de cuentas de fondeo</div>
+  <div class="app-title">Proyecto Aarón</div>
+  <div class="app-subtitle">Panel de desempeño de cuentas de fondeo</div>
 
   <div class="tabs" id="tabs">
     <button class="tab active" data-tab="overview">Resumen</button>
@@ -176,7 +176,7 @@
         <input type="date" id="filter-to" onchange="applyCustomRange()">
       </div>
     </div>
-    <p class="section-label">Métricas globales</p>
+    <p class="section-label">Métricas generales</p>
     <div class="kpi-grid" id="kpis"></div>
     <div class="card">
       <p class="card-title">Gastos y beneficios por mes ($)</p>
@@ -195,7 +195,7 @@
   <div id="tab-cuentas" style="display:none">
     <div class="header-row">
       <p class="section-label" style="margin-bottom:0">Todas las cuentas</p>
-      <label class="show-toggle"><input type="checkbox" id="showInactive"> Mostrar passed / failed</label>
+      <label class="show-toggle"><input type="checkbox" id="showInactive"> Mostrar aprobadas / suspendidas</label>
     </div>
     <div class="phase-section">
       <div class="phase-header">
@@ -450,12 +450,12 @@ function renderKPIs(){
   const cuentasPh2=accounts.filter(a=>a.fase==='Ph2'&&!isInactive(a)).length;
 
   document.getElementById('kpis').innerHTML=[
-    {label:'Evaluaciones',    value:totalEval,   sub:enCurso+' en curso · '+ph1Passed+' passed · '+ph1Failed+' failed', accent:'accent-blue'},
+    {label:'Evaluaciones',    value:totalEval,   sub:enCurso+' en curso · '+ph1Passed+' aprobada'+(ph1Passed!==1?'s':'')+' · '+ph1Failed+' suspendida'+(ph1Failed!==1?'s':''), accent:'accent-blue'},
     {label:'Cuentas Fase 1',  value:enCurso,     sub:enCurso===1?'cuenta activa':'cuentas activas',  accent:'accent-blue',    color:'var(--blue)'},
     {label:'Cuentas Fase 2',  value:cuentasPh2,  sub:cuentasPh2===1?'cuenta activa':'cuentas activas', accent:'accent-indigo', color:'var(--indigo)'},
     {label:'Cuentas Funded',  value:totalFunded, sub:totalFunded===1?'cuenta activa':'cuentas activas', accent:'accent-emerald', color:totalFunded>0?'var(--emerald)':undefined},
     {label:'Ratio de Fondeo', value:ratioFondeo!==null?ratioFondeo.toFixed(1)+'%':'—',
-     sub:ratioFondeo!==null?ph1Passed+' funded / '+totalTerminadas+' completadas':'Sin evaluaciones completadas aún',
+     sub:ratioFondeo!==null?ph1Passed+' aprobada'+(ph1Passed!==1?'s':'')+' / '+totalTerminadas+' completadas':'Sin evaluaciones completadas aún',
      accent:'accent-purple', color:ratioFondeo===null?'var(--hint)':ratioFondeo>=50?'var(--green)':'var(--amber)'},
     {label:'Gastos totales',  value:fmt(totalGastos),  sub:filteredLogs.filter(l=>l.tipo==='gasto').length+' fees pagados', accent:'accent-red',  color:totalGastos>0?'var(--red)':undefined},
     {label:'Retiros totales', value:fmt(totalRetiros), sub:filteredLogs.filter(l=>l.tipo==='retiro').length+' retiros',     accent:'accent-teal', color:totalRetiros>0?'var(--teal)':undefined},
