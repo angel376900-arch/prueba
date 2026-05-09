@@ -23,6 +23,8 @@
     --blue-bg: #eff4ff;
     --amber: #b45309;
     --amber-bg: #fffbeb;
+    --gray-bg: #f0efed;
+    --gray: #6b6b68;
     --radius: 10px;
     --radius-lg: 14px;
   }
@@ -31,24 +33,31 @@
   .app-header { margin-bottom: 28px; }
   .app-title { font-size: 22px; font-weight: 600; }
   .app-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
   .tabs { display: flex; gap: 6px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
   .tab { font-size: 13px; font-weight: 500; padding: 8px 16px; border: none; background: none; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s; }
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--text); border-bottom-color: var(--text); }
+
   .section-label { font-size: 11px; font-weight: 600; color: var(--hint); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 12px; }
+
   .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 24px; }
   .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
   .kpi-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .kpi-value { font-size: 20px; font-weight: 600; }
   .kpi-sub { font-size: 11px; color: var(--hint); margin-top: 3px; }
+
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
   .card-title { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 16px; }
+
   .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
   .legend span { display: flex; align-items: center; gap: 5px; }
   .leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
   .chart-wrap { position: relative; width: 100%; }
+
   .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 24px; }
   .account-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; }
+  .account-card.closed { opacity: .45; border-style: dashed; }
   .acc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .acc-id { font-size: 14px; font-weight: 600; }
   .acc-balance { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
@@ -58,10 +67,12 @@
   .acc-pct.zero { color: var(--muted); }
   .bar-bg { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 4px; }
+
   .badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; display: inline-block; }
   .badge-ph1 { background: var(--blue-bg); color: var(--blue); }
   .badge-ph2 { background: var(--green-bg); color: var(--green); }
   .badge-funded { background: var(--amber-bg); color: var(--amber); }
+  .badge-closed { background: var(--gray-bg); color: var(--gray); }
 
   /* EDITABLE TABLE */
   .edit-table-wrap { overflow-x: auto; }
@@ -69,6 +80,7 @@
   .edit-table th { text-align: left; padding: 10px 14px; color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); font-size: 12px; white-space: nowrap; }
   .edit-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   .edit-table tr:last-child td { border-bottom: none; }
+  .edit-table tr.row-closed td { opacity: .45; }
   .edit-table input, .edit-table select {
     font-family: 'Inter', sans-serif; font-size: 13px; padding: 7px 10px;
     border: 1px solid var(--border); border-radius: 6px; background: var(--bg);
@@ -76,10 +88,8 @@
   }
   .edit-table input:focus, .edit-table select:focus { border-color: #aaa; background: var(--surface); }
   .edit-table input[type="number"] { width: 110px; }
-  .edit-table .col-id input { width: 130px; }
-  .delete-row-btn { background: none; border: none; cursor: pointer; color: var(--hint); font-size: 18px; padding: 0 6px; transition: color .15s; line-height: 1; }
-  .delete-row-btn:hover { color: var(--red); }
-  .btn-row { display: flex; gap: 10px; align-items: center; padding: 16px 20px; border-top: 1px solid var(--border); }
+
+  .btn-row { display: flex; gap: 10px; align-items: center; padding: 16px 20px; border-top: 1px solid var(--border); flex-wrap: wrap; }
   .btn { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: var(--radius); border: 1px solid var(--text); background: var(--text); color: #fff; cursor: pointer; transition: opacity .15s; }
   .btn:hover { opacity: .85; }
   .btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border); }
@@ -94,7 +104,6 @@
   input, select { font-family: 'Inter', sans-serif; font-size: 13px; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); outline: none; transition: border-color .15s; }
   input:focus, select:focus { border-color: #aaa; }
 
-  /* LOG */
   .log-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .log-table th { text-align: left; padding: 10px 12px; color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); font-size: 12px; }
   .log-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
@@ -102,10 +111,11 @@
   .tag-gasto { color: var(--red); font-weight: 500; }
   .tag-retiro { color: var(--blue); font-weight: 500; }
   .tag-reinversion { color: var(--green); font-weight: 500; }
-  .delete-btn { background: none; border: none; cursor: pointer; color: var(--hint); font-size: 16px; padding: 0 4px; transition: color .15s; }
-  .delete-btn:hover { color: var(--red); }
   .empty { text-align: center; padding: 32px; color: var(--hint); font-size: 13px; }
-  .hint-text { font-size: 12px; color: var(--hint); margin-top: 12px; }
+  .hint-text { font-size: 12px; color: var(--hint); margin-top: 12px; line-height: 1.6; }
+
+  .closed-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer; margin-left: auto; }
+  .closed-toggle input[type="checkbox"] { width: auto; padding: 0; accent-color: var(--text); cursor: pointer; }
 
   @media (max-width: 600px) {
     .app { padding: 20px 12px 40px; }
@@ -133,7 +143,7 @@
     <p class="section-label">Métricas globales</p>
     <div class="kpi-grid" id="kpis"></div>
     <div class="card">
-      <p class="card-title">Balance por cuenta ($)</p>
+      <p class="card-title">Balance por cuenta activa ($)</p>
       <div class="legend">
         <span><span class="leg-dot" style="background:#2563eb"></span>Fase 1</span>
         <span><span class="leg-dot" style="background:#3a7d44"></span>Fase 2</span>
@@ -144,7 +154,7 @@
       </div>
     </div>
     <div class="card">
-      <p class="card-title">Rendimiento % por cuenta</p>
+      <p class="card-title">Rendimiento % por cuenta activa</p>
       <div class="chart-wrap" style="height:200px">
         <canvas id="chartPct" role="img" aria-label="Rendimiento porcentual por cuenta"></canvas>
       </div>
@@ -153,7 +163,12 @@
 
   <!-- TARJETAS -->
   <div id="tab-accounts" style="display:none">
-    <p class="section-label">Vista de tarjetas</p>
+    <div style="display:flex;align-items:center;margin-bottom:16px">
+      <p class="section-label" style="margin-bottom:0">Vista de tarjetas</p>
+      <label class="closed-toggle">
+        <input type="checkbox" id="showClosed"> Mostrar cerradas
+      </label>
+    </div>
     <div class="accounts-grid" id="accountsGrid"></div>
   </div>
 
@@ -170,7 +185,6 @@
               <th>Balance ($)</th>
               <th>Rendimiento (%)</th>
               <th>Estado</th>
-              <th></th>
             </tr>
           </thead>
           <tbody id="editTableBody"></tbody>
@@ -182,7 +196,10 @@
         <span class="save-msg" id="saveMsg">✓ Guardado y gráficos actualizados</span>
       </div>
     </div>
-    <p class="hint-text">Los datos se guardan en este navegador. Cada vez que actualices las cuentas, pulsa "Guardar cambios" para refrescar el resumen y los gráficos.</p>
+    <p class="hint-text">
+      Para cerrar una cuenta, cambia su estado a <strong>Cerrada</strong> — desaparecerá del resumen y los gráficos pero quedará guardada en el historial.<br>
+      Los datos se guardan en este navegador. Pulsa "Guardar cambios" para refrescar el resumen y los gráficos.
+    </p>
   </div>
 
   <!-- GASTOS -->
@@ -259,23 +276,28 @@ function saveLogs(){ try{ localStorage.setItem('tracker_logs',JSON.stringify(log
 let accounts = loadAccounts();
 let logs = loadLogs();
 
+const isClosed = a => a.status === 'Cerrada';
+const activeAccounts = () => accounts.filter(a => !isClosed(a));
+
 const faseColor = f => f==='Ph1'?'#2563eb':f==='Ph2'?'#3a7d44':'#b45309';
-const faseBadge = f => f==='Ph1'?'badge-ph1':f==='Ph2'?'badge-ph2':'badge-funded';
+const faseBadge = f => f==='Ph1'?'badge-ph1':f==='Ph2'?'badge-ph2':f==='Funded'?'badge-funded':'badge-closed';
 const faseLabel = f => f==='Ph1'?'Fase 1':f==='Ph2'?'Fase 2':'Funded';
 const fmt = n => '$'+parseFloat(n||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
 const n = v => parseFloat(v||0);
 
 function renderKPIs(){
-  const total = accounts.reduce((s,a)=>s+n(a.balance),0);
-  const brutoPL = accounts.reduce((s,a)=>s+(n(a.balance)*n(a.pct)/100),0);
+  const active = activeAccounts();
+  const total = active.reduce((s,a)=>s+n(a.balance),0);
+  const brutoPL = active.reduce((s,a)=>s+(n(a.balance)*n(a.pct)/100),0);
   const totalGastos = logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+l.importe,0);
   const totalRetiros = logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+l.importe,0);
   const neto = brutoPL - totalGastos;
   const roi = totalGastos>0?(neto/totalGastos*100):null;
-  const enPos = accounts.filter(a=>n(a.pct)>0).length;
+  const enPos = active.filter(a=>n(a.pct)>0).length;
+  const cerradas = accounts.filter(isClosed).length;
   document.getElementById('kpis').innerHTML=[
-    {label:'Capital gestionado',value:fmt(total),sub:accounts.length+' cuentas activas'},
-    {label:'Funded / Fase 2 / Fase 1',value:accounts.filter(a=>a.fase==='Funded').length+' / '+accounts.filter(a=>a.fase==='Ph2').length+' / '+accounts.filter(a=>a.fase==='Ph1').length,sub:''},
+    {label:'Capital activo',value:fmt(total),sub:active.length+' cuentas · '+cerradas+' cerrada'+(cerradas!==1?'s':'')},
+    {label:'Funded / Fase 2 / Fase 1',value:active.filter(a=>a.fase==='Funded').length+' / '+active.filter(a=>a.fase==='Ph2').length+' / '+active.filter(a=>a.fase==='Ph1').length,sub:'solo cuentas activas'},
     {label:'P&L bruto',value:(brutoPL>=0?'+':'')+fmt(brutoPL),sub:enPos+' cuenta'+(enPos!==1?'s':'')+' en positivo',color:brutoPL>=0?'var(--green)':'var(--red)'},
     {label:'Gastos totales',value:fmt(totalGastos),sub:'Retiros: '+fmt(totalRetiros),color:'var(--red)'},
     {label:'Beneficio neto',value:fmt(neto),sub:roi!==null?'ROI: '+(roi>=0?'+':'')+roi.toFixed(1)+'%':'Sin gastos aún',color:neto>=0?'var(--green)':'var(--red)'},
@@ -283,12 +305,17 @@ function renderKPIs(){
 }
 
 function renderAccounts(){
-  document.getElementById('accountsGrid').innerHTML = accounts.map(a=>{
+  const showClosed = document.getElementById('showClosed').checked;
+  const list = showClosed ? accounts : activeAccounts();
+  document.getElementById('accountsGrid').innerHTML = list.map(a=>{
     const pct=n(a.pct), bal=n(a.balance);
+    const closed = isClosed(a);
     const cls=pct>0?'pos':pct<0?'neg':'zero';
     const barW=Math.min(Math.abs(pct)/8*100,100);
-    return `<div class="account-card">
-      <div class="acc-head"><span class="acc-id">${a.id}</span><span class="badge ${faseBadge(a.fase)}">${faseLabel(a.fase)}</span></div>
+    const badgeClass = closed ? 'badge-closed' : faseBadge(a.fase);
+    const badgeText = closed ? 'Cerrada' : faseLabel(a.fase);
+    return `<div class="account-card${closed?' closed':''}">
+      <div class="acc-head"><span class="acc-id">${a.id}</span><span class="badge ${badgeClass}">${badgeText}</span></div>
       <div class="acc-balance">${fmt(bal)}</div>
       <div class="acc-pct ${cls}">${pct>0?'+':''}${pct.toFixed(1)}%</div>
       <div class="bar-bg"><div class="bar-fill" style="width:${barW}%;background:${pct>=0?'var(--green)':'var(--red)'}"></div></div>
@@ -300,11 +327,12 @@ let chartB, chartP;
 function renderCharts(){
   if(chartB) chartB.destroy();
   if(chartP) chartP.destroy();
-  const labels = accounts.map(a=>a.id.replace('#',''));
-  const gc = 'rgba(0,0,0,0.06)', tc = '#888';
+  const active = activeAccounts();
+  const labels = active.map(a=>a.id.replace('#',''));
+  const gc='rgba(0,0,0,0.06)', tc='#888';
   chartB = new Chart(document.getElementById('chartBalances'),{
     type:'bar',
-    data:{labels,datasets:[{data:accounts.map(a=>n(a.balance)),backgroundColor:accounts.map(a=>faseColor(a.fase)),borderRadius:4}]},
+    data:{labels,datasets:[{data:active.map(a=>n(a.balance)),backgroundColor:active.map(a=>faseColor(a.fase)),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
       x:{ticks:{color:tc,font:{size:11},maxRotation:45},grid:{color:gc}},
       y:{ticks:{color:tc,font:{size:11},callback:v=>'$'+v.toLocaleString()},grid:{color:gc}}
@@ -312,7 +340,7 @@ function renderCharts(){
   });
   chartP = new Chart(document.getElementById('chartPct'),{
     type:'bar',
-    data:{labels,datasets:[{data:accounts.map(a=>n(a.pct)),backgroundColor:accounts.map(a=>n(a.pct)>=0?'#3a7d44':'#c0392b'),borderRadius:4}]},
+    data:{labels,datasets:[{data:active.map(a=>n(a.pct)),backgroundColor:active.map(a=>n(a.pct)>=0?'#3a7d44':'#c0392b'),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
       x:{ticks:{color:tc,font:{size:11},maxRotation:45},grid:{color:gc}},
       y:{ticks:{color:tc,font:{size:11},callback:v=>v+'%'},grid:{color:gc}}
@@ -321,40 +349,37 @@ function renderCharts(){
 }
 
 function renderEditTable(){
-  document.getElementById('editTableBody').innerHTML = accounts.map((a,i)=>`
-    <tr>
-      <td><input type="text" value="${a.id}" onchange="accounts[${i}].id=this.value"></td>
+  document.getElementById('editTableBody').innerHTML = accounts.map((a,i)=>{
+    const closed = isClosed(a);
+    return `<tr class="${closed?'row-closed':''}">
+      <td><input type="text" value="${a.id}" onchange="accounts[${i}].id=this.value" ${closed?'disabled':''}></td>
       <td>
-        <select onchange="accounts[${i}].fase=this.value">
+        <select onchange="accounts[${i}].fase=this.value" ${closed?'disabled':''}>
           <option value="Ph1" ${a.fase==='Ph1'?'selected':''}>Fase 1</option>
           <option value="Ph2" ${a.fase==='Ph2'?'selected':''}>Fase 2</option>
           <option value="Funded" ${a.fase==='Funded'?'selected':''}>Funded</option>
         </select>
       </td>
-      <td><input type="number" step="0.01" value="${a.balance}" onchange="accounts[${i}].balance=parseFloat(this.value)||0"></td>
-      <td><input type="number" step="0.01" value="${a.pct}" onchange="accounts[${i}].pct=parseFloat(this.value)||0"></td>
+      <td><input type="number" step="0.01" value="${a.balance}" onchange="accounts[${i}].balance=parseFloat(this.value)||0" ${closed?'disabled':''}></td>
+      <td><input type="number" step="0.01" value="${a.pct}" onchange="accounts[${i}].pct=parseFloat(this.value)||0" ${closed?'disabled':''}></td>
       <td>
-        <select onchange="accounts[${i}].status=this.value">
+        <select onchange="accounts[${i}].status=this.value;renderEditTable()">
           <option value="New" ${a.status==='New'?'selected':''}>New</option>
           <option value="Ongoing" ${a.status==='Ongoing'?'selected':''}>Ongoing</option>
           <option value="Passed" ${a.status==='Passed'?'selected':''}>Passed</option>
           <option value="Failed" ${a.status==='Failed'?'selected':''}>Failed</option>
+          <option value="Cerrada" ${a.status==='Cerrada'?'selected':''}>Cerrada</option>
         </select>
       </td>
-      <td><button class="delete-row-btn" onclick="removeAccount(${i})" title="Eliminar">×</button></td>
-    </tr>`).join('');
-}
-
-function removeAccount(i){
-  if(!confirm('¿Eliminar esta cuenta?')) return;
-  accounts.splice(i,1);
-  renderEditTable();
+    </tr>`;
+  }).join('');
 }
 
 function addAccount(){
   accounts.push({id:'#nuevo',fase:'Ph1',balance:5000,pct:0,status:'New'});
   renderEditTable();
-  document.querySelector('#editTableBody tr:last-child input').focus();
+  const inputs = document.querySelectorAll('#editTableBody tr:last-child input:not([disabled])');
+  if(inputs.length) inputs[0].focus();
 }
 
 function saveAccounts(){
@@ -368,7 +393,7 @@ function saveAccounts(){
 }
 
 function renderCuentaSelect(){
-  document.getElementById('inp-cuenta').innerHTML = accounts.map(a=>`<option value="${a.id}">${a.id} (${faseLabel(a.fase)})</option>`).join('');
+  document.getElementById('inp-cuenta').innerHTML = activeAccounts().map(a=>`<option value="${a.id}">${a.id} (${faseLabel(a.fase)})</option>`).join('');
 }
 
 function renderKPIsGastos(){
@@ -412,19 +437,13 @@ function addLog(){
   renderKPIsGastos(); renderLog(); renderChartLog(); renderKPIs();
 }
 
-function deleteLog(id){
-  logs=logs.filter(l=>l.id!==id);
-  saveLogs();
-  renderKPIsGastos(); renderLog(); renderChartLog(); renderKPIs();
-}
-
 function renderLog(){
   if(!logs.length){ document.getElementById('log-container').innerHTML='<div class="empty">Sin movimientos registrados todavía.</div>'; return; }
   const tLabel=t=>t==='gasto'?'Gasto fee':t==='retiro'?'Retiro':'Reinversión';
   const tClass=t=>t==='gasto'?'tag-gasto':t==='retiro'?'tag-retiro':'tag-reinversion';
   document.getElementById('log-container').innerHTML=`
     <table class="log-table">
-      <thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Importe</th><th>Nota</th><th></th></tr></thead>
+      <thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Importe</th><th>Nota</th></tr></thead>
       <tbody>${[...logs].sort((a,b)=>b.fecha.localeCompare(a.fecha)).map(l=>`
         <tr>
           <td>${l.fecha}</td>
@@ -432,7 +451,6 @@ function renderLog(){
           <td>${l.cuenta}</td>
           <td style="font-weight:600">${fmt(l.importe)}</td>
           <td style="color:var(--muted)">${l.nota||'—'}</td>
-          <td><button class="delete-btn" onclick="deleteLog(${l.id})" title="Eliminar">×</button></td>
         </tr>`).join('')}
       </tbody>
     </table>`;
@@ -447,6 +465,8 @@ document.getElementById('tabs').addEventListener('click',e=>{
     document.getElementById('tab-'+id).style.display=id===btn.dataset.tab?'block':'none';
   });
 });
+
+document.getElementById('showClosed').addEventListener('change', renderAccounts);
 
 document.getElementById('inp-fecha').value=new Date().toISOString().split('T')[0];
 renderKPIs(); renderAccounts(); renderCharts(); renderEditTable(); renderCuentaSelect(); renderKPIsGastos(); renderChartLog(); renderLog();
