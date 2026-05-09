@@ -72,8 +72,8 @@
   .acc-id { font-size: 14px; font-weight: 600; }
   .acc-balance { font-size: 20px; font-weight: 600; margin-bottom: 2px; }
   .acc-pct { font-size: 13px; font-weight: 500; margin-bottom: 12px; }
-  .acc-pct.pos { color: var(--green); }
-  .acc-pct.neg { color: var(--red); }
+  .acc-pct.pos  { color: #4a9558; }
+  .acc-pct.neg  { color: var(--muted); }
   .acc-pct.zero { color: var(--muted); }
 
   /* PROGRESS BARS */
@@ -431,35 +431,35 @@ function makeAccountCard(a){
   const drawdownPct = Math.max(0, (lossUSD / BALANCE_INICIAL) * 100);
   const drawdownRemaining = MAX_DRAWDOWN_USD - lossUSD;
   const drawdownBarW = Math.min(drawdownPct / MAX_DRAWDOWN_PCT * 100, 100);
-  const drawdownColor = drawdownPct >= 7 ? '#c0392b' : drawdownPct >= 4 ? '#b45309' : '#3a7d44';
+  const drawdownColor = '#6b6b68';
 
   let progressBlock = '';
   if(!inactive && (a.fase==='Ph1' || a.fase==='Ph2')){
     const target = FASE_TARGET[a.fase];
     const progressW = Math.min(Math.max(pct / target * 100, 0), 100);
-    const progressColor = pct >= target ? '#047857' : pct >= target * 0.5 ? '#3a7d44' : '#2563eb';
-    const progressValueColor = pct >= target ? 'var(--emerald)' : pct < 0 ? 'var(--red)' : 'var(--text)';
+    const barColor = pct > 0 ? '#4a9558' : '#6b6b68';
+    const valColor = pct > 0 ? '#4a9558' : 'var(--muted)';
     progressBlock = `
       <div class="metric-row">
         <div class="metric-labels">
           <span class="metric-label">Progreso objetivo ${target}%</span>
-          <span class="metric-value" style="color:${progressValueColor}">${sign}${pct.toFixed(1)}% / ${target}%</span>
+          <span class="metric-value" style="color:${valColor}">${sign}${pct.toFixed(1)}% / ${target}%</span>
         </div>
-        <div class="bar-bg"><div class="bar-fill" style="width:${progressW}%;background:${progressColor}"></div></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${progressW}%;background:${barColor}"></div></div>
       </div>`;
   }
 
   if(!inactive && a.fase==='Funded'){
     const progressW = Math.min(Math.max(pct / FUNDED_TARGET * 100, 0), 100);
-    const progressColor = pct >= FUNDED_TARGET ? '#047857' : pct >= FUNDED_TARGET * 0.5 ? '#3a7d44' : '#0d9488';
-    const progressValueColor = pct >= FUNDED_TARGET ? 'var(--emerald)' : pct < 0 ? 'var(--red)' : 'var(--teal)';
+    const barColor = pct > 0 ? '#4a9558' : '#6b6b68';
+    const valColor = pct > 0 ? '#4a9558' : 'var(--muted)';
     progressBlock = `
       <div class="metric-row">
         <div class="metric-labels">
           <span class="metric-label">Objetivo retiro mensual ${FUNDED_TARGET}%</span>
-          <span class="metric-value" style="color:${progressValueColor}">${sign}${pct.toFixed(1)}% / ${FUNDED_TARGET}%</span>
+          <span class="metric-value" style="color:${valColor}">${sign}${pct.toFixed(1)}% / ${FUNDED_TARGET}%</span>
         </div>
-        <div class="bar-bg"><div class="bar-fill" style="width:${progressW}%;background:${progressColor}"></div></div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${progressW}%;background:${barColor}"></div></div>
       </div>`;
   }
 
