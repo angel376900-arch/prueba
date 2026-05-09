@@ -139,13 +139,7 @@
     .accounts-grid { grid-template-columns: 1fr; }
   }
 
-  .date-filter-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 20px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
-  .date-filter-pills { display: flex; flex-wrap: wrap; gap: 6px; }
-  .filter-pill { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); cursor: pointer; transition: all .15s; }
-  .filter-pill:hover { border-color: var(--text); color: var(--text); }
-  .filter-pill.active { background: var(--text); color: #fff; border-color: var(--text); }
-  .date-custom-inputs { display: flex; align-items: center; gap: 8px; }
-  .date-custom-inputs input { font-size: 12px; padding: 5px 10px; width: 140px; }
+  .date-filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
 </style>
 </head>
 <body>
@@ -163,17 +157,19 @@
   <!-- RESUMEN -->
   <div id="tab-overview">
     <div class="date-filter-bar">
-      <div class="date-filter-pills" id="filterPills">
-        <button class="filter-pill active" data-range="all">Todo</button>
-        <button class="filter-pill" data-range="month">Este mes</button>
-        <button class="filter-pill" data-range="lastmonth">Mes anterior</button>
-        <button class="filter-pill" data-range="year">Este año</button>
-        <button class="filter-pill" data-range="custom">Personalizado</button>
-      </div>
-      <div class="date-custom-inputs" id="customDateInputs" style="display:none">
-        <input type="date" id="filter-from" onchange="applyCustomRange()">
-        <span style="font-size:13px;color:var(--muted)">→</span>
-        <input type="date" id="filter-to" onchange="applyCustomRange()">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <select id="rangeSelect" onchange="onRangeSelect()" style="width:160px;font-size:13px;padding:7px 12px">
+          <option value="all">Todo el tiempo</option>
+          <option value="month">Este mes</option>
+          <option value="lastmonth">Mes anterior</option>
+          <option value="year">Este año</option>
+          <option value="custom">Personalizado…</option>
+        </select>
+        <div id="customDateInputs" style="display:none;align-items:center;gap:8px">
+          <input type="date" id="filter-from" onchange="applyCustomRange()" style="width:145px;font-size:13px;padding:7px 10px">
+          <span style="font-size:13px;color:var(--muted)">→</span>
+          <input type="date" id="filter-to" onchange="applyCustomRange()" style="width:145px;font-size:13px;padding:7px 10px">
+        </div>
       </div>
     </div>
     <p class="section-label">Métricas generales</p>
@@ -426,11 +422,11 @@ function refreshOverview(){
   renderChartMonthly();
 }
 
-document.getElementById('filterPills').addEventListener('click', e=>{
-  const pill = e.target.closest('[data-range]');
-  if(!pill) return;
-  setRange(pill.dataset.range);
-});
+function onRangeSelect(){
+  const val = document.getElementById('rangeSelect').value;
+  document.getElementById('customDateInputs').style.display = val==='custom' ? 'flex' : 'none';
+  if(val !== 'custom') setRange(val);
+}
 
 // ── KPIs RESUMEN ──
 function renderKPIs(){
