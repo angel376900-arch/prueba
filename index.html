@@ -9,30 +9,19 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #f5f5f4;
-    --surface: #ffffff;
-    --border: #e5e5e3;
-    --text: #1c1c1a;
-    --muted: #6b6b68;
-    --hint: #a8a8a4;
-    --green: #3a7d44;
-    --green-bg: #edf7ef;
-    --red: #c0392b;
-    --red-bg: #fdf0ef;
-    --blue: #2563eb;
-    --blue-bg: #eff4ff;
-    --amber: #b45309;
-    --amber-bg: #fffbeb;
-    --gray-bg: #f0efed;
-    --gray: #6b6b68;
-    --radius: 10px;
-    --radius-lg: 14px;
+    --bg: #f5f5f4; --surface: #ffffff; --border: #e5e5e3;
+    --text: #1c1c1a; --muted: #6b6b68; --hint: #a8a8a4;
+    --green: #3a7d44; --green-bg: #edf7ef;
+    --red: #c0392b; --red-bg: #fdf0ef;
+    --blue: #2563eb; --blue-bg: #eff4ff;
+    --amber: #b45309; --amber-bg: #fffbeb;
+    --gray-bg: #f0efed; --gray: #6b6b68;
+    --radius: 10px; --radius-lg: 14px;
   }
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; min-height: 100vh; }
   .app { max-width: 980px; margin: 0 auto; padding: 32px 20px 60px; }
-  .app-header { margin-bottom: 28px; }
-  .app-title { font-size: 22px; font-weight: 600; }
-  .app-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .app-title { font-size: 22px; font-weight: 600; margin-bottom: 2px; }
+  .app-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
 
   .tabs { display: flex; gap: 6px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
   .tab { font-size: 13px; font-weight: 500; padding: 8px 16px; border: none; background: none; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s; }
@@ -57,7 +46,7 @@
 
   .accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 24px; }
   .account-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; }
-  .account-card.closed { opacity: .45; border-style: dashed; }
+  .account-card.inactive { opacity: .4; border-style: dashed; }
   .acc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .acc-id { font-size: 14px; font-weight: 600; }
   .acc-balance { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
@@ -70,17 +59,17 @@
 
   .badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; display: inline-block; }
   .badge-ph1 { background: var(--blue-bg); color: var(--blue); }
-  .badge-ph2 { background: var(--green-bg); color: var(--green); }
+  .badge-ph2 { background: #f0f0ff; color: #5b5bd6; }
   .badge-funded { background: var(--amber-bg); color: var(--amber); }
-  .badge-closed { background: var(--gray-bg); color: var(--gray); }
+  .badge-passed { background: var(--green-bg); color: var(--green); }
+  .badge-failed { background: var(--red-bg); color: var(--red); }
 
-  /* EDITABLE TABLE */
   .edit-table-wrap { overflow-x: auto; }
   .edit-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .edit-table th { text-align: left; padding: 10px 14px; color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); font-size: 12px; white-space: nowrap; }
   .edit-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   .edit-table tr:last-child td { border-bottom: none; }
-  .edit-table tr.row-closed td { opacity: .45; }
+  .edit-table tr.row-inactive td { opacity: .4; }
   .edit-table input, .edit-table select {
     font-family: 'Inter', sans-serif; font-size: 13px; padding: 7px 10px;
     border: 1px solid var(--border); border-radius: 6px; background: var(--bg);
@@ -97,25 +86,21 @@
   .save-msg { font-size: 12px; color: var(--green); opacity: 0; transition: opacity .3s; }
   .save-msg.show { opacity: 1; }
 
-  /* FORM */
-  .form-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 20px; }
+  .form-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 12px; }
   .form-group { display: flex; flex-direction: column; gap: 4px; }
   .form-group label { font-size: 12px; color: var(--muted); font-weight: 500; }
   input, select { font-family: 'Inter', sans-serif; font-size: 13px; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); outline: none; transition: border-color .15s; }
   input:focus, select:focus { border-color: #aaa; }
 
-  .log-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .log-table th { text-align: left; padding: 10px 12px; color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); font-size: 12px; }
-  .log-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
-  .log-table tr:last-child td { border-bottom: none; }
+  .form-hint { font-size: 12px; color: var(--hint); margin-bottom: 20px; padding: 8px 12px; background: var(--bg); border-radius: var(--radius); border: 1px solid var(--border); border-left: 3px solid #e0a020; }
   .tag-gasto { color: var(--red); font-weight: 500; }
   .tag-retiro { color: var(--blue); font-weight: 500; }
-  .tag-reinversion { color: var(--green); font-weight: 500; }
   .empty { text-align: center; padding: 32px; color: var(--hint); font-size: 13px; }
   .hint-text { font-size: 12px; color: var(--hint); margin-top: 12px; line-height: 1.6; }
 
-  .closed-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer; margin-left: auto; }
-  .closed-toggle input[type="checkbox"] { width: auto; padding: 0; accent-color: var(--text); cursor: pointer; }
+  .header-row { display: flex; align-items: center; margin-bottom: 16px; }
+  .show-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); cursor: pointer; margin-left: auto; }
+  .show-toggle input[type="checkbox"] { width: auto; padding: 0; accent-color: var(--text); cursor: pointer; }
 
   @media (max-width: 600px) {
     .app { padding: 20px 12px 40px; }
@@ -126,10 +111,8 @@
 </head>
 <body>
 <div class="app">
-  <div class="app-header">
-    <div class="app-title">Trading Tracker</div>
-    <div class="app-subtitle">Panel de cuentas de fondeo</div>
-  </div>
+  <div class="app-title">Trading Tracker</div>
+  <div class="app-subtitle">Panel de cuentas de fondeo</div>
 
   <div class="tabs" id="tabs">
     <button class="tab active" data-tab="overview">Resumen</button>
@@ -146,27 +129,27 @@
       <p class="card-title">Balance por cuenta activa ($)</p>
       <div class="legend">
         <span><span class="leg-dot" style="background:#2563eb"></span>Fase 1</span>
-        <span><span class="leg-dot" style="background:#3a7d44"></span>Fase 2</span>
+        <span><span class="leg-dot" style="background:#5b5bd6"></span>Fase 2</span>
         <span><span class="leg-dot" style="background:#b45309"></span>Funded</span>
       </div>
-      <div class="chart-wrap" style="height:260px">
-        <canvas id="chartBalances" role="img" aria-label="Balance por cuenta"></canvas>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartBalances" role="img" aria-label="Balance por cuenta activa"></canvas>
       </div>
     </div>
     <div class="card">
       <p class="card-title">Rendimiento % por cuenta activa</p>
-      <div class="chart-wrap" style="height:200px">
-        <canvas id="chartPct" role="img" aria-label="Rendimiento porcentual por cuenta"></canvas>
+      <div class="chart-wrap" style="height:180px">
+        <canvas id="chartPct" role="img" aria-label="Rendimiento porcentual por cuenta activa"></canvas>
       </div>
     </div>
   </div>
 
   <!-- TARJETAS -->
   <div id="tab-accounts" style="display:none">
-    <div style="display:flex;align-items:center;margin-bottom:16px">
+    <div class="header-row">
       <p class="section-label" style="margin-bottom:0">Vista de tarjetas</p>
-      <label class="closed-toggle">
-        <input type="checkbox" id="showClosed"> Mostrar cerradas
+      <label class="show-toggle">
+        <input type="checkbox" id="showInactive"> Mostrar passed / failed
       </label>
     </div>
     <div class="accounts-grid" id="accountsGrid"></div>
@@ -197,30 +180,30 @@
       </div>
     </div>
     <p class="hint-text">
-      Para cerrar una cuenta, cambia su estado a <strong>Cerrada</strong> — desaparecerá del resumen y los gráficos pero quedará guardada en el historial.<br>
-      Los datos se guardan en este navegador. Pulsa "Guardar cambios" para refrescar el resumen y los gráficos.
+      <strong>New / Ongoing</strong> → activa, aparece en métricas y gráficos.<br>
+      <strong>Passed ✓</strong> → superó la fase y avanzó. Excluida de métricas activas.<br>
+      <strong>Failed ✗</strong> → cuenta perdida. Excluida de métricas activas.
     </p>
   </div>
 
-  <!-- GASTOS -->
+  <!-- GASTOS Y RETIROS -->
   <div id="tab-gastos" style="display:none">
     <p class="section-label">Registrar movimiento</p>
     <div class="form-row">
+      <div class="form-group">
+        <label>Tipo</label>
+        <select id="inp-tipo" style="width:160px" onchange="onTipoChange()">
+          <option value="gasto">Gasto (fee evaluación)</option>
+          <option value="retiro">Retiro</option>
+        </select>
+      </div>
       <div class="form-group">
         <label>Fecha</label>
         <input type="date" id="inp-fecha" style="width:150px">
       </div>
       <div class="form-group">
-        <label>Tipo</label>
-        <select id="inp-tipo" style="width:140px">
-          <option value="gasto">Gasto (fee)</option>
-          <option value="retiro">Retiro</option>
-          <option value="reinversion">Reinversión</option>
-        </select>
-      </div>
-      <div class="form-group">
         <label>Cuenta</label>
-        <select id="inp-cuenta" style="width:185px"></select>
+        <select id="inp-cuenta" style="width:210px"></select>
       </div>
       <div class="form-group">
         <label>Importe ($)</label>
@@ -228,94 +211,117 @@
       </div>
       <div class="form-group">
         <label>Nota</label>
-        <input type="text" id="inp-nota" placeholder="Descripción opcional" style="width:190px">
+        <input type="text" id="inp-nota" placeholder="Opcional" style="width:180px">
       </div>
       <button class="btn" onclick="addLog()">Registrar</button>
     </div>
+    <div id="tipo-hint" class="form-hint"></div>
 
     <p class="section-label">Totales</p>
     <div class="kpi-grid" id="kpis-gastos" style="margin-bottom:24px"></div>
 
     <div class="card" style="margin-bottom:24px">
-      <p class="card-title">Distribución de movimientos ($)</p>
+      <p class="card-title">Gastos vs retiros ($)</p>
       <div class="legend">
-        <span><span class="leg-dot" style="background:#c0392b"></span>Gastos</span>
-        <span><span class="leg-dot" style="background:#2563eb"></span>Retiros</span>
-        <span><span class="leg-dot" style="background:#3a7d44"></span>Reinversiones</span>
+        <span><span class="leg-dot" style="background:#c0392b"></span>Gastos (fees Fase 1)</span>
+        <span><span class="leg-dot" style="background:#2563eb"></span>Retiros (Funded)</span>
       </div>
       <div class="chart-wrap" style="height:200px">
-        <canvas id="chartLog" role="img" aria-label="Totales de gastos, retiros y reinversiones"></canvas>
+        <canvas id="chartLog" role="img" aria-label="Totales de gastos y retiros"></canvas>
       </div>
     </div>
 
-    <p class="section-label">Historial</p>
+    <p class="section-label">Historial — edita cualquier campo y guarda</p>
     <div class="card" style="padding:0;overflow:hidden">
       <div id="log-container"><div class="empty">Sin movimientos registrados todavía.</div></div>
+      <div id="log-btn-row" style="display:none" class="btn-row">
+        <button class="btn" onclick="persistLogs();flashMsg('logMsg')">Guardar cambios</button>
+        <span class="save-msg" id="logMsg">✓ Historial guardado</span>
+      </div>
     </div>
+    <p class="hint-text">Modifica cualquier campo directamente en la tabla y pulsa "Guardar cambios" para confirmar.</p>
   </div>
 </div>
 
 <script>
 const DEFAULT_ACCOUNTS = [
-  {id:'#12159220',fase:'Ph2',balance:10000.00,pct:0.0,status:'New'},
-  {id:'#12147308',fase:'Ph2',balance:5253.31,pct:5.1,status:'Ongoing'},
-  {id:'#12139081',fase:'Ph1',balance:4815.37,pct:-3.7,status:'Ongoing'},
-  {id:'#12117742',fase:'Funded',balance:4925.16,pct:-1.5,status:'Ongoing'},
-  {id:'#12065108',fase:'Ph1',balance:4817.81,pct:-3.6,status:'Ongoing'},
-  {id:'#12064381',fase:'Ph1',balance:4870.82,pct:-2.6,status:'Ongoing'},
-  {id:'#12056037',fase:'Ph1',balance:4830.11,pct:-3.4,status:'Ongoing'},
-  {id:'#12030270',fase:'Ph2',balance:4788.10,pct:-4.2,status:'Ongoing'},
-  {id:'#12021509',fase:'Ph1',balance:4799.38,pct:-4.0,status:'Ongoing'},
-  {id:'#12007988',fase:'Ph1',balance:4796.80,pct:-4.1,status:'Ongoing'},
+  {id:'#12083427', fase:'Ph1',    balance:5401.62, pct:8.0,  status:'Passed'},
+  {id:'#12097900', fase:'Ph2',    balance:5259.51, pct:5.2,  status:'Passed'},
+  {id:'#12117742', fase:'Funded', balance:4925.16, pct:-1.5, status:'Ongoing'},
 ];
 
-function loadAccounts(){ try{ const d=localStorage.getItem('tracker_accounts'); return d?JSON.parse(d):DEFAULT_ACCOUNTS.map(a=>({...a})); }catch(e){ return DEFAULT_ACCOUNTS.map(a=>({...a})); } }
-function loadLogs(){ try{ const d=localStorage.getItem('tracker_logs'); return d?JSON.parse(d):[]; }catch(e){ return []; } }
-function saveLogs(){ try{ localStorage.setItem('tracker_logs',JSON.stringify(logs)); }catch(e){} }
+function loadAccounts(){
+  try{
+    const d=localStorage.getItem('tracker_accounts');
+    return d?JSON.parse(d):DEFAULT_ACCOUNTS.map(a=>({...a}));
+  }catch(e){ return DEFAULT_ACCOUNTS.map(a=>({...a})); }
+}
+function loadLogs(){
+  try{ const d=localStorage.getItem('tracker_logs'); return d?JSON.parse(d):[]; }catch(e){ return []; }
+}
 
-let accounts = loadAccounts();
-let logs = loadLogs();
+let accounts=loadAccounts();
+let logs=loadLogs();
 
-const isClosed = a => a.status === 'Cerrada';
-const activeAccounts = () => accounts.filter(a => !isClosed(a));
+const isInactive=a=>a.status==='Passed'||a.status==='Failed';
+const activeAccounts=()=>accounts.filter(a=>!isInactive(a));
+const ph1Accounts=()=>activeAccounts().filter(a=>a.fase==='Ph1');
+const fundedAccounts=()=>activeAccounts().filter(a=>a.fase==='Funded');
 
-const faseColor = f => f==='Ph1'?'#2563eb':f==='Ph2'?'#3a7d44':'#b45309';
-const faseBadge = f => f==='Ph1'?'badge-ph1':f==='Ph2'?'badge-ph2':f==='Funded'?'badge-funded':'badge-closed';
-const faseLabel = f => f==='Ph1'?'Fase 1':f==='Ph2'?'Fase 2':'Funded';
-const fmt = n => '$'+parseFloat(n||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
-const n = v => parseFloat(v||0);
+const faseColor=f=>f==='Ph1'?'#2563eb':f==='Ph2'?'#5b5bd6':'#b45309';
+const faseLabel=f=>f==='Ph1'?'Fase 1':f==='Ph2'?'Fase 2':'Funded';
+const statusBadge=a=>{
+  if(a.status==='Passed') return 'badge-passed';
+  if(a.status==='Failed') return 'badge-failed';
+  return a.fase==='Ph1'?'badge-ph1':a.fase==='Ph2'?'badge-ph2':'badge-funded';
+};
+const statusLabel=a=>{
+  if(a.status==='Passed') return 'Passed ✓';
+  if(a.status==='Failed') return 'Failed ✗';
+  return faseLabel(a.fase);
+};
+const fmt=v=>'$'+parseFloat(v||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+const nv=v=>parseFloat(v||0);
+
+function flashMsg(id){
+  const el=document.getElementById(id);
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
 
 function renderKPIs(){
-  const active = activeAccounts();
-  const total = active.reduce((s,a)=>s+n(a.balance),0);
-  const brutoPL = active.reduce((s,a)=>s+(n(a.balance)*n(a.pct)/100),0);
-  const totalGastos = logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+l.importe,0);
-  const totalRetiros = logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+l.importe,0);
-  const neto = brutoPL - totalGastos;
-  const roi = totalGastos>0?(neto/totalGastos*100):null;
-  const enPos = active.filter(a=>n(a.pct)>0).length;
-  const cerradas = accounts.filter(isClosed).length;
+  const active=activeAccounts();
+  const total=active.reduce((s,a)=>s+nv(a.balance),0);
+  const brutoPL=active.reduce((s,a)=>s+(nv(a.balance)*nv(a.pct)/100),0);
+  const totalGastos=logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+nv(l.importe),0);
+  const totalRetiros=logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+nv(l.importe),0);
+  const neto=brutoPL-totalGastos;
+  const roi=totalGastos>0?(neto/totalGastos*100):null;
+  const passed=accounts.filter(a=>a.status==='Passed').length;
+  const failed=accounts.filter(a=>a.status==='Failed').length;
   document.getElementById('kpis').innerHTML=[
-    {label:'Capital activo',value:fmt(total),sub:active.length+' cuentas · '+cerradas+' cerrada'+(cerradas!==1?'s':'')},
-    {label:'Funded / Fase 2 / Fase 1',value:active.filter(a=>a.fase==='Funded').length+' / '+active.filter(a=>a.fase==='Ph2').length+' / '+active.filter(a=>a.fase==='Ph1').length,sub:'solo cuentas activas'},
-    {label:'P&L bruto',value:(brutoPL>=0?'+':'')+fmt(brutoPL),sub:enPos+' cuenta'+(enPos!==1?'s':'')+' en positivo',color:brutoPL>=0?'var(--green)':'var(--red)'},
-    {label:'Gastos totales',value:fmt(totalGastos),sub:'Retiros: '+fmt(totalRetiros),color:'var(--red)'},
+    {label:'Capital activo',value:fmt(total),sub:active.length+' cuenta'+(active.length!==1?'s':'')+' activa'+(active.length!==1?'s':'')},
+    {label:'Historial',value:passed+' passed · '+failed+' failed',sub:'evaluaciones anteriores'},
+    {label:'P&L bruto',value:(brutoPL>=0?'+':'')+fmt(brutoPL),sub:'rendimiento actual',color:brutoPL>=0?'var(--green)':'var(--red)'},
+    {label:'Gastos evaluaciones',value:fmt(totalGastos),sub:logs.filter(l=>l.tipo==='gasto').length+' fees pagados',color:'var(--red)'},
+    {label:'Retiros',value:fmt(totalRetiros),sub:logs.filter(l=>l.tipo==='retiro').length+' retiros',color:'var(--blue)'},
     {label:'Beneficio neto',value:fmt(neto),sub:roi!==null?'ROI: '+(roi>=0?'+':'')+roi.toFixed(1)+'%':'Sin gastos aún',color:neto>=0?'var(--green)':'var(--red)'},
   ].map(k=>`<div class="kpi"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="${k.color?'color:'+k.color:''}">${k.value}</div>${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
 }
 
 function renderAccounts(){
-  const showClosed = document.getElementById('showClosed').checked;
-  const list = showClosed ? accounts : activeAccounts();
-  document.getElementById('accountsGrid').innerHTML = list.map(a=>{
-    const pct=n(a.pct), bal=n(a.balance);
-    const closed = isClosed(a);
+  const showInactive=document.getElementById('showInactive').checked;
+  const list=showInactive?accounts:activeAccounts();
+  if(!list.length){
+    document.getElementById('accountsGrid').innerHTML='<div class="empty">Sin cuentas. Añade una en "Actualizar datos".</div>';
+    return;
+  }
+  document.getElementById('accountsGrid').innerHTML=list.map(a=>{
+    const pct=nv(a.pct),bal=nv(a.balance),inactive=isInactive(a);
     const cls=pct>0?'pos':pct<0?'neg':'zero';
-    const barW=Math.min(Math.abs(pct)/8*100,100);
-    const badgeClass = closed ? 'badge-closed' : faseBadge(a.fase);
-    const badgeText = closed ? 'Cerrada' : faseLabel(a.fase);
-    return `<div class="account-card${closed?' closed':''}">
-      <div class="acc-head"><span class="acc-id">${a.id}</span><span class="badge ${badgeClass}">${badgeText}</span></div>
+    const barW=Math.min(Math.abs(pct)/10*100,100);
+    return `<div class="account-card${inactive?' inactive':''}">
+      <div class="acc-head"><span class="acc-id">${a.id}</span><span class="badge ${statusBadge(a)}">${statusLabel(a)}</span></div>
       <div class="acc-balance">${fmt(bal)}</div>
       <div class="acc-pct ${cls}">${pct>0?'+':''}${pct.toFixed(1)}%</div>
       <div class="bar-bg"><div class="bar-fill" style="width:${barW}%;background:${pct>=0?'var(--green)':'var(--red)'}"></div></div>
@@ -323,54 +329,49 @@ function renderAccounts(){
   }).join('');
 }
 
-let chartB, chartP;
+let chartB,chartP;
 function renderCharts(){
   if(chartB) chartB.destroy();
   if(chartP) chartP.destroy();
-  const active = activeAccounts();
-  const labels = active.map(a=>a.id.replace('#',''));
-  const gc='rgba(0,0,0,0.06)', tc='#888';
-  chartB = new Chart(document.getElementById('chartBalances'),{
+  const active=activeAccounts();
+  const labels=active.map(a=>a.id.replace('#',''));
+  const gc='rgba(0,0,0,0.06)',tc='#888';
+  chartB=new Chart(document.getElementById('chartBalances'),{
     type:'bar',
-    data:{labels,datasets:[{data:active.map(a=>n(a.balance)),backgroundColor:active.map(a=>faseColor(a.fase)),borderRadius:4}]},
+    data:{labels,datasets:[{data:active.map(a=>nv(a.balance)),backgroundColor:active.map(a=>faseColor(a.fase)),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
-      x:{ticks:{color:tc,font:{size:11},maxRotation:45},grid:{color:gc}},
+      x:{ticks:{color:tc,font:{size:12}},grid:{color:gc}},
       y:{ticks:{color:tc,font:{size:11},callback:v=>'$'+v.toLocaleString()},grid:{color:gc}}
     }}
   });
-  chartP = new Chart(document.getElementById('chartPct'),{
+  chartP=new Chart(document.getElementById('chartPct'),{
     type:'bar',
-    data:{labels,datasets:[{data:active.map(a=>n(a.pct)),backgroundColor:active.map(a=>n(a.pct)>=0?'#3a7d44':'#c0392b'),borderRadius:4}]},
+    data:{labels,datasets:[{data:active.map(a=>nv(a.pct)),backgroundColor:active.map(a=>nv(a.pct)>=0?'#3a7d44':'#c0392b'),borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
-      x:{ticks:{color:tc,font:{size:11},maxRotation:45},grid:{color:gc}},
+      x:{ticks:{color:tc,font:{size:12}},grid:{color:gc}},
       y:{ticks:{color:tc,font:{size:11},callback:v=>v+'%'},grid:{color:gc}}
     }}
   });
 }
 
 function renderEditTable(){
-  document.getElementById('editTableBody').innerHTML = accounts.map((a,i)=>{
-    const closed = isClosed(a);
-    return `<tr class="${closed?'row-closed':''}">
-      <td><input type="text" value="${a.id}" onchange="accounts[${i}].id=this.value" ${closed?'disabled':''}></td>
-      <td>
-        <select onchange="accounts[${i}].fase=this.value" ${closed?'disabled':''}>
-          <option value="Ph1" ${a.fase==='Ph1'?'selected':''}>Fase 1</option>
-          <option value="Ph2" ${a.fase==='Ph2'?'selected':''}>Fase 2</option>
-          <option value="Funded" ${a.fase==='Funded'?'selected':''}>Funded</option>
-        </select>
-      </td>
-      <td><input type="number" step="0.01" value="${a.balance}" onchange="accounts[${i}].balance=parseFloat(this.value)||0" ${closed?'disabled':''}></td>
-      <td><input type="number" step="0.01" value="${a.pct}" onchange="accounts[${i}].pct=parseFloat(this.value)||0" ${closed?'disabled':''}></td>
-      <td>
-        <select onchange="accounts[${i}].status=this.value;renderEditTable()">
-          <option value="New" ${a.status==='New'?'selected':''}>New</option>
-          <option value="Ongoing" ${a.status==='Ongoing'?'selected':''}>Ongoing</option>
-          <option value="Passed" ${a.status==='Passed'?'selected':''}>Passed</option>
-          <option value="Failed" ${a.status==='Failed'?'selected':''}>Failed</option>
-          <option value="Cerrada" ${a.status==='Cerrada'?'selected':''}>Cerrada</option>
-        </select>
-      </td>
+  document.getElementById('editTableBody').innerHTML=accounts.map((a,i)=>{
+    const inactive=isInactive(a);
+    return `<tr class="${inactive?'row-inactive':''}">
+      <td><input type="text" value="${a.id}" onchange="accounts[${i}].id=this.value" ${inactive?'disabled':''}></td>
+      <td><select onchange="accounts[${i}].fase=this.value" ${inactive?'disabled':''}>
+        <option value="Ph1"    ${a.fase==='Ph1'?'selected':''}>Fase 1</option>
+        <option value="Ph2"    ${a.fase==='Ph2'?'selected':''}>Fase 2</option>
+        <option value="Funded" ${a.fase==='Funded'?'selected':''}>Funded</option>
+      </select></td>
+      <td><input type="number" step="0.01" value="${a.balance}" onchange="accounts[${i}].balance=parseFloat(this.value)||0" ${inactive?'disabled':''}></td>
+      <td><input type="number" step="0.01" value="${a.pct}" onchange="accounts[${i}].pct=parseFloat(this.value)||0" ${inactive?'disabled':''}></td>
+      <td><select onchange="accounts[${i}].status=this.value;renderEditTable()">
+        <option value="New"     ${a.status==='New'?'selected':''}>New</option>
+        <option value="Ongoing" ${a.status==='Ongoing'?'selected':''}>Ongoing</option>
+        <option value="Passed"  ${a.status==='Passed'?'selected':''}>Passed ✓</option>
+        <option value="Failed"  ${a.status==='Failed'?'selected':''}>Failed ✗</option>
+      </select></td>
     </tr>`;
   }).join('');
 }
@@ -378,44 +379,55 @@ function renderEditTable(){
 function addAccount(){
   accounts.push({id:'#nuevo',fase:'Ph1',balance:5000,pct:0,status:'New'});
   renderEditTable();
-  const inputs = document.querySelectorAll('#editTableBody tr:last-child input:not([disabled])');
+  const inputs=document.querySelectorAll('#editTableBody tr:last-child input:not([disabled])');
   if(inputs.length) inputs[0].focus();
 }
 
 function saveAccounts(){
   try{
     localStorage.setItem('tracker_accounts',JSON.stringify(accounts));
-    renderKPIs(); renderAccounts(); renderCharts(); renderCuentaSelect();
-    const msg=document.getElementById('saveMsg');
-    msg.classList.add('show');
-    setTimeout(()=>msg.classList.remove('show'),2500);
+    renderKPIs(); renderAccounts(); renderCharts(); onTipoChange();
+    flashMsg('saveMsg');
   }catch(e){ alert('Error al guardar.'); }
 }
 
-function renderCuentaSelect(){
-  document.getElementById('inp-cuenta').innerHTML = activeAccounts().map(a=>`<option value="${a.id}">${a.id} (${faseLabel(a.fase)})</option>`).join('');
+function onTipoChange(){
+  const tipo=document.getElementById('inp-tipo').value;
+  const sel=document.getElementById('inp-cuenta');
+  const hint=document.getElementById('tipo-hint');
+  if(tipo==='gasto'){
+    const ph1=ph1Accounts();
+    sel.innerHTML=ph1.length
+      ? ph1.map(a=>`<option value="${a.id}">${a.id} — Fase 1</option>`).join('')
+      : '<option disabled selected>Sin cuentas en Fase 1 activas</option>';
+    hint.textContent='Gasto de fee de evaluación. Solo aplica a cuentas en Fase 1.';
+  } else {
+    const funded=fundedAccounts();
+    sel.innerHTML=funded.length
+      ? funded.map(a=>`<option value="${a.id}">${a.id} — Funded</option>`).join('')
+      : '<option disabled selected>Sin cuentas Funded activas</option>';
+    hint.textContent='Retiro de beneficios. Solo aplica a cuentas Funded.';
+  }
 }
 
 function renderKPIsGastos(){
-  const g=logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+l.importe,0);
-  const r=logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+l.importe,0);
-  const ri=logs.filter(l=>l.tipo==='reinversion').reduce((s,l)=>s+l.importe,0);
+  const g=logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+nv(l.importe),0);
+  const r=logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+nv(l.importe),0);
   document.getElementById('kpis-gastos').innerHTML=[
-    {label:'Gastos (fees)',value:fmt(g),color:'var(--red)'},
-    {label:'Retiros',value:fmt(r),color:'var(--blue)'},
-    {label:'Reinversiones',value:fmt(ri),color:'var(--green)'},
-  ].map(k=>`<div class="kpi"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="color:${k.color}">${k.value}</div></div>`).join('');
+    {label:'Total gastos (fees)',value:fmt(g),color:'var(--red)',sub:logs.filter(l=>l.tipo==='gasto').length+' evaluaciones pagadas'},
+    {label:'Total retiros',value:fmt(r),color:'var(--blue)',sub:logs.filter(l=>l.tipo==='retiro').length+' retiros realizados'},
+    {label:'Neto (retiros − gastos)',value:fmt(r-g),color:(r-g)>=0?'var(--green)':'var(--red)',sub:''},
+  ].map(k=>`<div class="kpi"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="color:${k.color}">${k.value}</div>${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
 }
 
 let chartL;
 function renderChartLog(){
-  const g=logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+l.importe,0);
-  const r=logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+l.importe,0);
-  const ri=logs.filter(l=>l.tipo==='reinversion').reduce((s,l)=>s+l.importe,0);
+  const g=logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+nv(l.importe),0);
+  const r=logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+nv(l.importe),0);
   if(chartL) chartL.destroy();
-  chartL = new Chart(document.getElementById('chartLog'),{
+  chartL=new Chart(document.getElementById('chartLog'),{
     type:'bar',
-    data:{labels:['Gastos (fees)','Retiros','Reinversiones'],datasets:[{data:[g,r,ri],backgroundColor:['#c0392b','#2563eb','#3a7d44'],borderRadius:6}]},
+    data:{labels:['Gastos — fees Fase 1','Retiros — Funded'],datasets:[{data:[g,r],backgroundColor:['#c0392b','#2563eb'],borderRadius:6}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
       x:{ticks:{color:'#888',font:{size:12}},grid:{display:false}},
       y:{ticks:{color:'#888',font:{size:11},callback:v=>'$'+v.toLocaleString()},grid:{color:'rgba(0,0,0,0.06)'}}
@@ -426,33 +438,53 @@ function renderChartLog(){
 function addLog(){
   const fecha=document.getElementById('inp-fecha').value;
   const tipo=document.getElementById('inp-tipo').value;
-  const cuenta=document.getElementById('inp-cuenta').value;
+  const cuentaEl=document.getElementById('inp-cuenta');
+  const cuenta=cuentaEl.value;
   const importe=parseFloat(document.getElementById('inp-importe').value)||0;
   const nota=document.getElementById('inp-nota').value.trim();
   if(!fecha||importe<=0){ alert('Introduce fecha e importe válidos.'); return; }
+  if(!cuenta){ alert('No hay cuentas disponibles para este tipo de movimiento.'); return; }
   logs.push({id:Date.now(),fecha,tipo,cuenta,importe,nota});
-  saveLogs();
+  persistLogs();
   document.getElementById('inp-importe').value='';
   document.getElementById('inp-nota').value='';
-  renderKPIsGastos(); renderLog(); renderChartLog(); renderKPIs();
+  renderKPIs(); renderKPIsGastos(); renderChartLog(); renderLog();
+}
+
+function persistLogs(){
+  try{ localStorage.setItem('tracker_logs',JSON.stringify(logs)); }catch(e){}
 }
 
 function renderLog(){
-  if(!logs.length){ document.getElementById('log-container').innerHTML='<div class="empty">Sin movimientos registrados todavía.</div>'; return; }
-  const tLabel=t=>t==='gasto'?'Gasto fee':t==='retiro'?'Retiro':'Reinversión';
-  const tClass=t=>t==='gasto'?'tag-gasto':t==='retiro'?'tag-retiro':'tag-reinversion';
-  document.getElementById('log-container').innerHTML=`
-    <table class="log-table">
-      <thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Importe</th><th>Nota</th></tr></thead>
-      <tbody>${[...logs].sort((a,b)=>b.fecha.localeCompare(a.fecha)).map(l=>`
-        <tr>
-          <td>${l.fecha}</td>
-          <td><span class="${tClass(l.tipo)}">${tLabel(l.tipo)}</span></td>
-          <td>${l.cuenta}</td>
-          <td style="font-weight:600">${fmt(l.importe)}</td>
-          <td style="color:var(--muted)">${l.nota||'—'}</td>
-        </tr>`).join('')}
-      </tbody>
+  const container=document.getElementById('log-container');
+  const btnRow=document.getElementById('log-btn-row');
+  if(!logs.length){
+    container.innerHTML='<div class="empty">Sin movimientos registrados todavía.</div>';
+    btnRow.style.display='none';
+    return;
+  }
+  btnRow.style.display='flex';
+  const sorted=[...logs].sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  const rows=sorted.map(l=>{
+    const idx=logs.findIndex(x=>x.id===l.id);
+    const cuentasOpts=l.tipo==='gasto'
+      ? accounts.filter(a=>a.fase==='Ph1').map(a=>`<option value="${a.id}" ${l.cuenta===a.id?'selected':''}>${a.id}</option>`).join('')
+      : accounts.filter(a=>a.fase==='Funded').map(a=>`<option value="${a.id}" ${l.cuenta===a.id?'selected':''}>${a.id}</option>`).join('');
+    return `<tr>
+      <td><input type="date" value="${l.fecha}" onchange="logs[${idx}].fecha=this.value" style="width:140px"></td>
+      <td><select onchange="logs[${idx}].tipo=this.value;renderLog()">
+        <option value="gasto"  ${l.tipo==='gasto'?'selected':''}>Gasto fee</option>
+        <option value="retiro" ${l.tipo==='retiro'?'selected':''}>Retiro</option>
+      </select></td>
+      <td><select onchange="logs[${idx}].cuenta=this.value" style="width:160px">${cuentasOpts}</select></td>
+      <td><input type="number" step="0.01" min="0" value="${nv(l.importe).toFixed(2)}" onchange="logs[${idx}].importe=parseFloat(this.value)||0" style="width:110px"></td>
+      <td><input type="text" value="${l.nota||''}" placeholder="—" onchange="logs[${idx}].nota=this.value" style="width:150px"></td>
+    </tr>`;
+  }).join('');
+  container.innerHTML=`
+    <table class="edit-table">
+      <thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Importe ($)</th><th>Nota</th></tr></thead>
+      <tbody>${rows}</tbody>
     </table>`;
 }
 
@@ -466,10 +498,10 @@ document.getElementById('tabs').addEventListener('click',e=>{
   });
 });
 
-document.getElementById('showClosed').addEventListener('change', renderAccounts);
-
+document.getElementById('showInactive').addEventListener('change',renderAccounts);
 document.getElementById('inp-fecha').value=new Date().toISOString().split('T')[0];
-renderKPIs(); renderAccounts(); renderCharts(); renderEditTable(); renderCuentaSelect(); renderKPIsGastos(); renderChartLog(); renderLog();
+
+renderKPIs(); renderAccounts(); renderCharts(); renderEditTable(); onTipoChange(); renderKPIsGastos(); renderChartLog(); renderLog();
 </script>
 </body>
 </html>
