@@ -431,26 +431,26 @@ function onRangeSelect(){
 
 // ── KPIs RESUMEN ──
 function renderKPIs(){
-  const ph1Terminadas=accounts.filter(a=>a.fase==='Ph1'&&isInactive(a));
+  const ph1Terminadas=accounts.filter(a=>a.fase==='Ph1'&&isInactive(a)&&a.status!=='Eliminada');
   const ph1Passed=ph1Terminadas.filter(a=>a.status==='Passed').length;
   const ph1Failed=ph1Terminadas.filter(a=>a.status==='Failed').length;
   const totalTerminadas=ph1Terminadas.length;
-  const totalFunded=accounts.filter(a=>a.fase==='Funded'&&!isInactive(a)).length;
+  const totalFunded=accounts.filter(a=>a.fase==='Funded'&&!isInactive(a)&&a.status!=='Eliminada').length;
   const ratioFondeo=totalTerminadas>0?(ph1Passed/totalTerminadas*100):null;
   const filteredLogs=getFilteredLogs();
   const totalGastos=filteredLogs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+nv(l.importe),0);
   const totalRetiros=filteredLogs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+nv(l.importe),0);
   const beneficioNeto=totalRetiros-totalGastos;
   const roi=totalGastos>0?(beneficioNeto/totalGastos*100):null;
-  const enCurso=accounts.filter(a=>a.fase==='Ph1'&&!isInactive(a)).length;
-  const totalEval=accounts.filter(a=>a.fase==='Ph1').length;
-  const cuentasPh2=accounts.filter(a=>a.fase==='Ph2'&&!isInactive(a)).length;
+  const enCurso=accounts.filter(a=>a.fase==='Ph1'&&!isInactive(a)&&a.status!=='Eliminada').length;
+  const totalEval=accounts.filter(a=>a.fase==='Ph1'&&a.status!=='Eliminada').length;
+  const cuentasPh2=accounts.filter(a=>a.fase==='Ph2'&&!isInactive(a)&&a.status!=='Eliminada').length;
 
   document.getElementById('kpis').innerHTML=[
     {label:'Evaluaciones',    value:totalEval,   sub:enCurso+' en curso · '+ph1Passed+' aprobada'+(ph1Passed!==1?'s':'')+' · '+ph1Failed+' suspendida'+(ph1Failed!==1?'s':''), accent:'accent-blue'},
     {label:'Cuentas Fase 1',  value:enCurso,     sub:enCurso===1?'cuenta activa':'cuentas activas',  accent:'accent-blue',    color:'var(--blue)'},
     {label:'Cuentas Fase 2',  value:cuentasPh2,  sub:cuentasPh2===1?'cuenta activa':'cuentas activas', accent:'accent-indigo', color:'var(--indigo)'},
-    {label:'Cuentas Funded',  value:totalFunded, sub:totalFunded===1?'cuenta activa':'cuentas activas', accent:'accent-emerald', color:totalFunded>0?'var(--emerald)':undefined},
+    {label:'Cuentas Funded',  value:totalFunded, sub:accounts.filter(a=>a.fase==='Ph2'&&!isInactive(a)&&a.status!=='Eliminada').length+' en Fase 2', accent:'accent-emerald', color:totalFunded>0?'var(--emerald)':undefined},
     {label:'Ratio de Fondeo', value:ratioFondeo!==null?ratioFondeo.toFixed(1)+'%':'—',
      sub:ratioFondeo!==null?ph1Passed+' aprobada'+(ph1Passed!==1?'s':'')+' / '+totalTerminadas+' completadas':'Sin evaluaciones completadas aún',
      accent:'accent-purple', color:ratioFondeo===null?'var(--hint)':ratioFondeo>=50?'var(--green)':'var(--amber)'},
