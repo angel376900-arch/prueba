@@ -138,6 +138,14 @@
     .kpi-value { font-size: 18px; }
     .accounts-grid { grid-template-columns: 1fr; }
   }
+
+  .date-filter-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 20px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+  .date-filter-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filter-pill { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); cursor: pointer; transition: all .15s; }
+  .filter-pill:hover { border-color: var(--text); color: var(--text); }
+  .filter-pill.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .date-custom-inputs { display: flex; align-items: center; gap: 8px; }
+  .date-custom-inputs input { font-size: 12px; padding: 5px 10px; width: 140px; }
 </style>
 </head>
 <body>
@@ -154,6 +162,20 @@
 
   <!-- RESUMEN -->
   <div id="tab-overview">
+    <div class="date-filter-bar">
+      <div class="date-filter-pills" id="filterPills">
+        <button class="filter-pill active" data-range="all">Todo</button>
+        <button class="filter-pill" data-range="month">Este mes</button>
+        <button class="filter-pill" data-range="lastmonth">Mes anterior</button>
+        <button class="filter-pill" data-range="year">Este año</button>
+        <button class="filter-pill" data-range="custom">Personalizado</button>
+      </div>
+      <div class="date-custom-inputs" id="customDateInputs" style="display:none">
+        <input type="date" id="filter-from" onchange="applyCustomRange()">
+        <span style="font-size:13px;color:var(--muted)">→</span>
+        <input type="date" id="filter-to" onchange="applyCustomRange()">
+      </div>
+    </div>
     <p class="section-label">Métricas globales</p>
     <div class="kpi-grid" id="kpis"></div>
     <div class="card">
@@ -350,6 +372,66 @@ function flashMsg(id){
   setTimeout(()=>el.classList.remove('show'),2500);
 }
 
+
+// ── DATE FILTER ──
+let filterRange = {from: null, to: null}; // null = no filter
+
+function getFilteredLogs(){
+  if(!filterRange.from && !filterRange.to) return logs.filter(l=>l.estado!=='anulado');
+  return logs.filter(l=>{
+    if(l.estado==='anulado') return false;
+    const d = l.fecha;
+    if(filterRange.from && d < filterRange.from) return false;
+    if(filterRange.to   && d > filterRange.to)   return false;
+    return true;
+  });
+}
+
+function setRange(range){
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const lastDay = new Date(y, now.getMonth()+1, 0).getDate();
+
+  // last month
+  const lm = now.getMonth() === 0 ? 12 : now.getMonth();
+  const ly = now.getMonth() === 0 ? y-1 : y;
+  const lmStr = String(lm).padStart(2,'0');
+  const lmLastDay = new Date(ly, lm, 0).getDate();
+
+  if(range==='all'){
+    filterRange = {from:null, to:null};
+  } else if(range==='month'){
+    filterRange = {from:`${y}-${m}-01`, to:`${y}-${m}-${String(lastDay).padStart(2,'0')}`};
+  } else if(range==='lastmonth'){
+    filterRange = {from:`${ly}-${lmStr}-01`, to:`${ly}-${lmStr}-${String(lmLastDay).padStart(2,'0')}`};
+  } else if(range==='year'){
+    filterRange = {from:`${y}-01-01`, to:`${y}-12-31`};
+  }
+
+  document.getElementById('customDateInputs').style.display = range==='custom' ? 'flex' : 'none';
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.toggle('active', p.dataset.range===range));
+  refreshOverview();
+}
+
+function applyCustomRange(){
+  const from = document.getElementById('filter-from').value;
+  const to   = document.getElementById('filter-to').value;
+  filterRange = {from: from||null, to: to||null};
+  refreshOverview();
+}
+
+function refreshOverview(){
+  renderKPIs();
+  renderChartMonthly();
+}
+
+document.getElementById('filterPills').addEventListener('click', e=>{
+  const pill = e.target.closest('[data-range]');
+  if(!pill) return;
+  setRange(pill.dataset.range);
+});
+
 // ── KPIs RESUMEN ──
 function renderKPIs(){
   const ph1Terminadas=accounts.filter(a=>a.fase==='Ph1'&&isInactive(a));
@@ -358,8 +440,9 @@ function renderKPIs(){
   const totalTerminadas=ph1Terminadas.length;
   const totalFunded=accounts.filter(a=>a.fase==='Funded'&&!isInactive(a)).length;
   const ratioFondeo=totalTerminadas>0?(ph1Passed/totalTerminadas*100):null;
-  const totalGastos=logs.filter(l=>l.tipo==='gasto'&&l.estado!=='anulado').reduce((s,l)=>s+nv(l.importe),0);
-  const totalRetiros=logs.filter(l=>l.tipo==='retiro'&&l.estado!=='anulado').reduce((s,l)=>s+nv(l.importe),0);
+  const filteredLogs=getFilteredLogs();
+  const totalGastos=filteredLogs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+nv(l.importe),0);
+  const totalRetiros=filteredLogs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+nv(l.importe),0);
   const beneficioNeto=totalRetiros-totalGastos;
   const roi=totalGastos>0?(beneficioNeto/totalGastos*100):null;
   const enCurso=accounts.filter(a=>a.fase==='Ph1'&&!isInactive(a)).length;
@@ -374,8 +457,8 @@ function renderKPIs(){
     {label:'Ratio de Fondeo', value:ratioFondeo!==null?ratioFondeo.toFixed(1)+'%':'—',
      sub:ratioFondeo!==null?ph1Passed+' funded / '+totalTerminadas+' completadas':'Sin evaluaciones completadas aún',
      accent:'accent-purple', color:ratioFondeo===null?'var(--hint)':ratioFondeo>=50?'var(--green)':'var(--amber)'},
-    {label:'Gastos totales',  value:fmt(totalGastos),  sub:logs.filter(l=>l.tipo==='gasto'&&l.estado!=='anulado').length+' fees pagados', accent:'accent-red',  color:totalGastos>0?'var(--red)':undefined},
-    {label:'Retiros totales', value:fmt(totalRetiros), sub:logs.filter(l=>l.tipo==='retiro'&&l.estado!=='anulado').length+' retiros',     accent:'accent-teal', color:totalRetiros>0?'var(--teal)':undefined},
+    {label:'Gastos totales',  value:fmt(totalGastos),  sub:filteredLogs.filter(l=>l.tipo==='gasto').length+' fees pagados', accent:'accent-red',  color:totalGastos>0?'var(--red)':undefined},
+    {label:'Retiros totales', value:fmt(totalRetiros), sub:filteredLogs.filter(l=>l.tipo==='retiro').length+' retiros',     accent:'accent-teal', color:totalRetiros>0?'var(--teal)':undefined},
     {label:'Beneficio neto',  value:(beneficioNeto>=0?'+':'')+fmt(beneficioNeto),
      sub:roi!==null?'ROI: '+(roi>=0?'+':'')+roi.toFixed(1)+'%':'Sin movimientos aún',
      accent:'accent-green', color:beneficioNeto>0?'var(--green)':beneficioNeto<0?'var(--red)':undefined},
@@ -386,10 +469,10 @@ function renderKPIs(){
 let chartMonthly;
 function renderChartMonthly(){
   if(chartMonthly) chartMonthly.destroy();
-  if(!logs.length) return;
+  const fLogs=getFilteredLogs();
+  if(!fLogs.length) return;
   const map={};
-  logs.forEach(l=>{
-    if(l.estado==='anulado') return;
+  fLogs.forEach(l=>{
     const d=new Date(l.fecha+'T00:00:00');
     const key=d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0');
     if(!map[key]) map[key]={gastos:0,retiros:0};
