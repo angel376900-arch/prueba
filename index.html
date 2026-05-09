@@ -121,7 +121,6 @@
     <button class="tab" data-tab="gastos">Gastos y retiros</button>
   </div>
 
-  <!-- RESUMEN -->
   <div id="tab-overview">
     <p class="section-label">Métricas globales</p>
     <div class="kpi-grid" id="kpis"></div>
@@ -144,7 +143,6 @@
     </div>
   </div>
 
-  <!-- TARJETAS -->
   <div id="tab-accounts" style="display:none">
     <div class="header-row">
       <p class="section-label" style="margin-bottom:0">Vista de tarjetas</p>
@@ -155,7 +153,6 @@
     <div class="accounts-grid" id="accountsGrid"></div>
   </div>
 
-  <!-- EDITAR -->
   <div id="tab-editar" style="display:none">
     <p class="section-label">Actualiza el balance y rendimiento de cada cuenta</p>
     <div class="card" style="padding:0;overflow:hidden">
@@ -163,11 +160,7 @@
         <table class="edit-table">
           <thead>
             <tr>
-              <th>ID cuenta</th>
-              <th>Fase</th>
-              <th>Balance ($)</th>
-              <th>Rendimiento (%)</th>
-              <th>Estado</th>
+              <th>ID cuenta</th><th>Fase</th><th>Balance ($)</th><th>Rendimiento (%)</th><th>Estado</th>
             </tr>
           </thead>
           <tbody id="editTableBody"></tbody>
@@ -186,7 +179,6 @@
     </p>
   </div>
 
-  <!-- GASTOS Y RETIROS -->
   <div id="tab-gastos" style="display:none">
     <p class="section-label">Registrar movimiento</p>
     <div class="form-row">
@@ -244,6 +236,9 @@
 </div>
 
 <script>
+// ── VERSIÓN — cambia este número cada vez que quieras forzar un reset de datos ──
+const DATA_VERSION = '2026-05-09-v3';
+
 const DEFAULT_ACCOUNTS = [
   {id:'#12083427', fase:'Ph1',    balance:5401.62, pct:8.0,  status:'Passed'},
   {id:'#12097900', fase:'Ph2',    balance:5259.51, pct:5.2,  status:'Passed'},
@@ -252,10 +247,19 @@ const DEFAULT_ACCOUNTS = [
 
 function loadAccounts(){
   try{
-    const d=localStorage.getItem('tracker_accounts');
-    return d?JSON.parse(d):DEFAULT_ACCOUNTS.map(a=>({...a}));
+    // Si la versión guardada no coincide, borramos datos viejos y usamos los defaults
+    const savedVersion = localStorage.getItem('tracker_version');
+    if(savedVersion !== DATA_VERSION){
+      localStorage.removeItem('tracker_accounts');
+      localStorage.removeItem('tracker_logs');
+      localStorage.setItem('tracker_version', DATA_VERSION);
+      return DEFAULT_ACCOUNTS.map(a=>({...a}));
+    }
+    const d = localStorage.getItem('tracker_accounts');
+    return d ? JSON.parse(d) : DEFAULT_ACCOUNTS.map(a=>({...a}));
   }catch(e){ return DEFAULT_ACCOUNTS.map(a=>({...a})); }
 }
+
 function loadLogs(){
   try{ const d=localStorage.getItem('tracker_logs'); return d?JSON.parse(d):[]; }catch(e){ return []; }
 }
@@ -386,6 +390,7 @@ function addAccount(){
 function saveAccounts(){
   try{
     localStorage.setItem('tracker_accounts',JSON.stringify(accounts));
+    localStorage.setItem('tracker_version', DATA_VERSION);
     renderKPIs(); renderAccounts(); renderCharts(); onTipoChange();
     flashMsg('saveMsg');
   }catch(e){ alert('Error al guardar.'); }
