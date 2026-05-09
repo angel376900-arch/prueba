@@ -148,8 +148,8 @@
   <div class="tabs" id="tabs">
     <button class="tab active" data-tab="overview">Resumen</button>
     <button class="tab" data-tab="cuentas">Cuentas</button>
-    <button class="tab" data-tab="editar">Actualizar datos</button>
     <button class="tab" data-tab="gastos">Gastos y retiros</button>
+    <button class="tab" data-tab="editar">Datos</button>
   </div>
 
   <!-- RESUMEN -->
@@ -358,8 +358,8 @@ function renderKPIs(){
   const totalTerminadas=ph1Terminadas.length;
   const totalFunded=accounts.filter(a=>a.fase==='Funded'&&!isInactive(a)).length;
   const ratioFondeo=totalTerminadas>0?(ph1Passed/totalTerminadas*100):null;
-  const totalGastos=logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+nv(l.importe),0);
-  const totalRetiros=logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+nv(l.importe),0);
+  const totalGastos=logs.filter(l=>l.tipo==='gasto'&&l.estado!=='anulado').reduce((s,l)=>s+nv(l.importe),0);
+  const totalRetiros=logs.filter(l=>l.tipo==='retiro'&&l.estado!=='anulado').reduce((s,l)=>s+nv(l.importe),0);
   const beneficioNeto=totalRetiros-totalGastos;
   const roi=totalGastos>0?(beneficioNeto/totalGastos*100):null;
   const enCurso=accounts.filter(a=>a.fase==='Ph1'&&!isInactive(a)).length;
@@ -374,8 +374,8 @@ function renderKPIs(){
     {label:'Ratio de Fondeo', value:ratioFondeo!==null?ratioFondeo.toFixed(1)+'%':'—',
      sub:ratioFondeo!==null?ph1Passed+' funded / '+totalTerminadas+' completadas':'Sin evaluaciones completadas aún',
      accent:'accent-purple', color:ratioFondeo===null?'var(--hint)':ratioFondeo>=50?'var(--green)':'var(--amber)'},
-    {label:'Gastos totales',  value:fmt(totalGastos),  sub:logs.filter(l=>l.tipo==='gasto').length+' fees pagados', accent:'accent-red',  color:totalGastos>0?'var(--red)':undefined},
-    {label:'Retiros totales', value:fmt(totalRetiros), sub:logs.filter(l=>l.tipo==='retiro').length+' retiros',     accent:'accent-teal', color:totalRetiros>0?'var(--teal)':undefined},
+    {label:'Gastos totales',  value:fmt(totalGastos),  sub:logs.filter(l=>l.tipo==='gasto'&&l.estado!=='anulado').length+' fees pagados', accent:'accent-red',  color:totalGastos>0?'var(--red)':undefined},
+    {label:'Retiros totales', value:fmt(totalRetiros), sub:logs.filter(l=>l.tipo==='retiro'&&l.estado!=='anulado').length+' retiros',     accent:'accent-teal', color:totalRetiros>0?'var(--teal)':undefined},
     {label:'Beneficio neto',  value:(beneficioNeto>=0?'+':'')+fmt(beneficioNeto),
      sub:roi!==null?'ROI: '+(roi>=0?'+':'')+roi.toFixed(1)+'%':'Sin movimientos aún',
      accent:'accent-green', color:beneficioNeto>0?'var(--green)':beneficioNeto<0?'var(--red)':undefined},
@@ -389,6 +389,7 @@ function renderChartMonthly(){
   if(!logs.length) return;
   const map={};
   logs.forEach(l=>{
+    if(l.estado==='anulado') return;
     const d=new Date(l.fecha+'T00:00:00');
     const key=d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0');
     if(!map[key]) map[key]={gastos:0,retiros:0};
@@ -560,20 +561,20 @@ function onTipoChange(){
 }
 
 function renderKPIsGastos(){
-  const g=logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+nv(l.importe),0);
-  const r=logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+nv(l.importe),0);
+  const g=logs.filter(l=>l.tipo==='gasto'&&l.estado!=='anulado').reduce((s,l)=>s+nv(l.importe),0);
+  const r=logs.filter(l=>l.tipo==='retiro'&&l.estado!=='anulado').reduce((s,l)=>s+nv(l.importe),0);
   const neto=r-g;
   document.getElementById('kpis-gastos').innerHTML=[
-    {label:'Total gastos (fees)',value:fmt(g),color:'var(--red)',sub:logs.filter(l=>l.tipo==='gasto').length+' evaluaciones pagadas'},
-    {label:'Total retiros',value:fmt(r),color:'var(--teal)',sub:logs.filter(l=>l.tipo==='retiro').length+' retiros realizados'},
+    {label:'Total gastos (fees)',value:fmt(g),color:'var(--red)',sub:logs.filter(l=>l.tipo==='gasto'&&l.estado!=='anulado').length+' evaluaciones pagadas'},
+    {label:'Total retiros',value:fmt(r),color:'var(--teal)',sub:logs.filter(l=>l.tipo==='retiro'&&l.estado!=='anulado').length+' retiros realizados'},
     {label:'Beneficio neto',value:(neto>=0?'+':'')+fmt(neto),color:neto>=0?'var(--green)':'var(--red)',sub:'Retiros − gastos'},
   ].map(k=>`<div class="kpi"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="color:${k.color}">${k.value}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
 }
 
 let chartL;
 function renderChartLog(){
-  const g=logs.filter(l=>l.tipo==='gasto').reduce((s,l)=>s+nv(l.importe),0);
-  const r=logs.filter(l=>l.tipo==='retiro').reduce((s,l)=>s+nv(l.importe),0);
+  const g=logs.filter(l=>l.tipo==='gasto'&&l.estado!=='anulado').reduce((s,l)=>s+nv(l.importe),0);
+  const r=logs.filter(l=>l.tipo==='retiro'&&l.estado!=='anulado').reduce((s,l)=>s+nv(l.importe),0);
   if(chartL) chartL.destroy();
   chartL=new Chart(document.getElementById('chartLog'),{
     type:'bar',
@@ -594,7 +595,7 @@ function addLog(){
   const nota=document.getElementById('inp-nota').value.trim();
   if(!fecha||importe<=0){ alert('Introduce fecha e importe válidos.'); return; }
   if(!cuenta){ alert('No hay cuentas disponibles para este tipo de movimiento.'); return; }
-  logs.push({id:Date.now(),fecha,tipo,cuenta,importe,nota});
+  logs.push({id:Date.now(),fecha,tipo,cuenta,importe,nota,estado:'activo'});
   persistLogs();
   document.getElementById('inp-importe').value='';
   document.getElementById('inp-nota').value='';
@@ -617,23 +618,30 @@ function renderLog(){
   const sorted=[...logs].sort((a,b)=>b.fecha.localeCompare(a.fecha));
   const rows=sorted.map(l=>{
     const idx=logs.findIndex(x=>x.id===l.id);
+    const anulado=l.estado==='anulado';
+    const rs=anulado?'opacity:0.4;':'';
+    const cs=anulado?'text-decoration:line-through;color:var(--hint);':'';
     const cuentasOpts=l.tipo==='gasto'
       ? accounts.filter(a=>a.fase==='Ph1').map(a=>`<option value="${a.id}" ${l.cuenta===a.id?'selected':''}>${a.id}</option>`).join('')
       : accounts.filter(a=>a.fase==='Funded').map(a=>`<option value="${a.id}" ${l.cuenta===a.id?'selected':''}>${a.id}</option>`).join('');
-    return `<tr>
-      <td><input type="date" value="${l.fecha}" onchange="logs[${idx}].fecha=this.value" style="width:140px"></td>
-      <td><select onchange="logs[${idx}].tipo=this.value;renderLog()">
+    return `<tr style="${rs}">
+      <td><input type="date" value="${l.fecha}" onchange="logs[${idx}].fecha=this.value" style="width:140px;${cs}"></td>
+      <td><select onchange="logs[${idx}].tipo=this.value;renderLog()" style="${cs}">
         <option value="gasto"  ${l.tipo==='gasto'?'selected':''}>Gasto fee</option>
         <option value="retiro" ${l.tipo==='retiro'?'selected':''}>Retiro</option>
       </select></td>
-      <td><select onchange="logs[${idx}].cuenta=this.value" style="width:160px">${cuentasOpts}</select></td>
-      <td><input type="number" step="0.01" min="0" value="${nv(l.importe).toFixed(2)}" onchange="logs[${idx}].importe=parseFloat(this.value)||0" style="width:110px"></td>
-      <td><input type="text" value="${l.nota||''}" placeholder="—" onchange="logs[${idx}].nota=this.value" style="width:150px"></td>
+      <td><select onchange="logs[${idx}].cuenta=this.value" style="width:160px;${cs}">${cuentasOpts}</select></td>
+      <td><input type="number" step="0.01" min="0" value="${nv(l.importe).toFixed(2)}" onchange="logs[${idx}].importe=parseFloat(this.value)||0" style="width:110px;${cs}"></td>
+      <td><input type="text" value="${l.nota||''}" placeholder="—" onchange="logs[${idx}].nota=this.value" style="width:120px;${cs}"></td>
+      <td><select onchange="logs[${idx}].estado=this.value;renderLog()" style="width:110px;">
+        <option value="activo"  ${!anulado?'selected':''}>Activo</option>
+        <option value="anulado" ${anulado?'selected':''}>Anulado</option>
+      </select></td>
     </tr>`;
   }).join('');
   container.innerHTML=`
     <table class="edit-table">
-      <thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Importe ($)</th><th>Nota</th></tr></thead>
+      <thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Importe ($)</th><th>Nota</th><th>Estado</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
@@ -643,7 +651,7 @@ document.getElementById('tabs').addEventListener('click',e=>{
   if(!btn) return;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  ['overview','cuentas','editar','gastos'].forEach(id=>{
+  ['overview','cuentas','gastos','editar'].forEach(id=>{
     document.getElementById('tab-'+id).style.display=id===btn.dataset.tab?'block':'none';
   });
 });
